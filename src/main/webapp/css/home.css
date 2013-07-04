@@ -1,0 +1,163 @@
+body { 
+    background: url(../images/purty_wood_@2X.png) repeat 0 0;
+}
+.mainConnectionsDiv
+{
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 24px;
+    padding: 0;
+}
+
+.connectionIconSpan
+{
+	background-image: url("../images/connection4.png");
+    background-position: 100% 50%;
+    background-repeat: no-repeat;
+    //cursor: pointer;
+    padding-right: 0;
+    background-color: transparent;
+    border: medium none;
+    clear: both;
+    float: left;
+    height: 32px;
+    width: 32px;
+}
+.listItemContentDiv
+{
+    display: inline-block;
+    padding: 8px;
+    right: 0;
+    text-align: left;
+    text-decoration: none;
+    text-indent: 0;
+}
+
+.homeConnectionListanchor
+{
+	margin-top: 2px;
+}
+
+.connectListAnchorDiv
+{
+	float: right; 
+	margin-top: 4px;
+}
+
+/*connectionsListItem:hover
+{
+	background-color: #F0F0F0;
+    background-image: linear-gradient(#E7E7E7, #E7E7E7 38%, #D7D7D7);
+    box-shadow: none;
+    text-shadow: none;
+    border-radius: 10px 10px 10px 10px;
+    border-color: #AAAAAA;
+    border-style: solid;
+   
+}*/
+
+.connectionsListItem
+{
+	border:1px solid transparent;
+}
+
+.connectionsListItemHover
+{
+	background-color: #F0F0F0;
+    background-image: linear-gradient(#E7E7E7, #E7E7E7 38%, #D7D7D7);
+    box-shadow: none;
+    text-shadow: none;
+    border-radius: 10px 10px 10px 10px;
+    border-color: #AAAAAA;
+    border-style: solid;
+   
+}
+.hoverDiv
+{
+	float: right;
+	margin-top: 15px;
+}
+.cursor1
+{
+    cursor: pointer;
+}
+.welcomeDiv
+{
+    text-align: center;
+}
+
+.jmxInfo
+{
+    border-style: solid;
+    border-color: #D3D3D3;
+    height: 140px;
+    width: 450px;
+    border-width: 1px;
+    border-radius: 5px;
+}
+
+.jndiInfo
+{
+    border-style: solid;
+    border-color: #D3D3D3;
+    height: 200px;
+    width: 450px;
+    border-width: 1px;
+    border-radius: 5px;
+}
+
+.vendorInfoDetails
+{
+    margin-left: 15px;
+}
+
+.errorDialog
+{
+
+}
+
+input:disabled
+{
+background:#dddddd;
+}
+
+.emptyConnectionListDiv
+{
+    padding: 25px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-style:italic;
+
+    /*font-size:30px;*/
+    color: #C0C0C0;
+    text-shadow: -1px -1px 1px #000;
+    //text-shadow:0 1px 0 #FFFFFF;
+}
+.connectionPort
+{
+    width: 70px;
+}
+.connectionVendorVersion
+{
+        width: 100px;
+}
+.jmxInnerDiv
+{
+    padding: 5px;
+}
+.jmxPassword
+{
+    width: 200px;
+}
+.mandatoryIcon
+{
+    background-image: url("../images/asterisk-small.ico");
+    background-position: 100% 50%;
+    background-repeat: no-repeat;
+    //cursor: pointer;
+    padding-right: 0;
+    background-color: transparent;
+    border: medium none;
+    clear: both;
+    float: left;
+    height: 16px;
+    width: 16px;
+}

@@ -1,0 +1,8 @@
+body { 
+    background: url(../images/purty_wood_@2X.png) repeat 0 0;
+}
+
+input[disabled], select[disabled], textarea[disabled], input[readonly], select[readonly], textarea[readonly] {
+    background-color: #EEEEEE;
+    cursor: not-allowed;
+}

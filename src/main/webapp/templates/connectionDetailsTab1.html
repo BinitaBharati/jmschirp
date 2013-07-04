@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+  <meta name="author" content="binita.bharati@gmail.com">
+  <link href="../externalLibs/bootstrap/docs/assets/css/bootstrap.css" rel="stylesheet">
+  <link href="../externalLibs/bootstrap/docs/assets/css/bootstrap-responsive.css" rel="stylesheet">
+  <link rel="stylesheet" href="../externalLibs/jqueryui/jquery-ui-1.10.2.custom/css/ui-lightness/jquery-ui-1.10.2.custom.min.css" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../externalLibs/bootstrap/docs/assets/ico/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../externalLibs/bootstrap/docs/assets/ico/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../externalLibs/bootstrap/docs/assets/ico/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="../externalLibs/bootstrap/docs/assets/ico/apple-touch-icon-57-precomposed.png">
+  <link rel="shortcut icon" href="../externalLibs/bootstrap/docs/assets/ico/favicon.png">
+
+  <link href="../externalLibs/footable/css/footable-0.1.css" rel="stylesheet" type="text/css" />
+  <!-- <link href="../externalLibs/footable/css/footable.sortable-0.1.css" rel="stylesheet" type="text/css" /> -->
+  <!-- <link href="../externalLibs/footable/css/footable.paginate.css" rel="stylesheet" type="text/css" /> -->
+
+   <link href="../css/common.css" rel="stylesheet">
+  
+	</head>
+	<body>
+    
+    <div class="jmsConnectionDataOuter">
+      <div class="searchDiv">
+        <div class="searchDivTblRow">
+          <!-- <img src="../images/search.png"> -->
+          <span>Search</span>
+          <input id="filter" type="text" />  
+          <a href="#clear" class="clear-filter" title="clear filter"><img src="../images/edit_clear.png" title="Clear filter"></a>
+        </div>
+        
+      </div>
+      
+     <table class="footable" data-page-navigation="#pagination" data-page-size="10" data-filter="#filter"> 
+        <!-- <table class="footable"> -->
+      <thead>
+        <tr>
+          <th data-class="expand">
+            <span>Queue</span>
+          </th>
+          <th>
+            <span>Action</span>
+          </th>
+          <th data-hide="phone,tablet">
+            Msg Count
+          </th>
+          <th data-hide="phone,tablet" data-type="numeric">
+            Size
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+      <% 
+      import bbharati.jmschirp.util.AppLogger;
+      import bbharati.jmschirp.connection.ConnectionBrowser
+
+      def jmsConnectionName = request.getParameter('name')
+      AppLogger.info('connectionDetailsTab1: entered with jmsConnectionName = '+jmsConnectionName)
+
+      def connectionDetailsLister = new ConnectionBrowser()
+      connectionDetailsLister.jmsConnectionName = jmsConnectionName
+      connectionDetailsLister.init()
+
+      def jmsQueueList = connectionDetailsLister.listQueues()
+      AppLogger.info('connectionDetailsTab1: jmsQueueList = '+jmsQueueList)
+
+      for(def i = 0 ; i < jmsQueueList.size() ;i++)
+      {
+        %>
+        <tr>
+          <td><%= jmsQueueList[i].name%></td>
+          <td>
+            <a href="../templates/queueDetails2.html?connection=<%= jmsConnectionName %>&queue=<%= jmsQueueList[i].name %>">
+              Browse
+            </a>
+            &nbsp &nbsp
+            <a href="">Search</a>
+          </td>
+          <td><%= jmsQueueList[i].pendingMessageCount%></td>
+          <td><%= jmsQueueList[i].pendingMessageSize%> bytes</td>
+        </tr>
+        <%
+      }
+      %>
+      </tbody>
+    </table>
+    <!-- <ul id="pagination" class="footable-nav"><span>Pages:</span></ul> -->
+  </div>
+   
+		
+	<script src="../externalLibs/jquery/jquery.js" type="text/javascript"></script>
+    <script src="../externalLibs/jqueryui/jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
+    <script src="../externalLibs/jquery/jquery.cookie.js" type="text/javascript"></script>
+
+     <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-transition.js"></script>
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-alert.js"></script>
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-modal.js"></script>
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-dropdown.js"></script>
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-scrollspy.js"></script>
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-tab.js"></script>
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-tooltip.js"></script>
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-popover.js"></script>
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-button.js"></script>
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-collapse.js"></script>
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-carousel.js"></script>
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-typeahead.js"></script> 
+
+    <!-- <script src="../js/connectionTab.js"></script> -->
+
+    <script src="../js/common.js"></script>
+
+    <script src="../externalLibs/footable/js/footable.js" type="text/javascript"></script>
+    <!-- <script src="../externalLibs/footable/js/footable.paginate.js" type="text/javascript"></script> -->
+    <script src="../externalLibs/footable/js/footable.filter.js" type="text/javascript"></script> 
+
+    <script src="../js/connectionDetailsTab1.js"></script>
+
+    
+     
+    </body>
+</html>

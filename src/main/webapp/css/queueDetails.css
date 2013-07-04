@@ -1,0 +1,33 @@
+.fooTblDiv
+{
+	display: none;
+	overflow: scroll;
+	
+}
+.progressBarOnScroll
+{
+	z-index: 1000;
+	position: absolute;
+}
+.closeIcon
+{
+	width: 1.4em;
+	height: 1.1em;
+	float: right;
+}
+
+.progressBar1
+{
+	float: right;
+}
+
+.nonTreeMsgDiv
+{
+		background-color: white;
+		padding: 10px;
+		height: 100%;
+		overflow: auto;
+		padding: 3px;
+		white-space: nowrap;
+
+}

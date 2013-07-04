@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Welcome to JmsChirp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="binita.bharati@gmail.com">
+
+    <!-- Le styles -->
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+
+      /* Since , modelDialog is inside a tab, have to do this here.
+         Else, while rendering the page, the dialogForm displays and then dissapears.
+         Also, this styling has to be written at this location only. 
+        Putting it in a external CSS doesnt work
+      */
+    .dialogForm
+    {
+      display: none;
+    }
+
+     #dialog label, #dialog input { display:block; }
+    #dialog label { margin-top: 0.5em; }
+    #dialog input, #dialog textarea { width: 95%; }
+    </style>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="/assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+  <link href="externalLibs/bootstrap/docs/assets/css/bootstrap.css" rel="stylesheet">
+  <link href="externalLibs/bootstrap/docs/assets/css/bootstrap-responsive.css" rel="stylesheet">
+  <link rel="stylesheet" href="externalLibs/jqueryui/jquery-ui-1.10.2.custom/css/ui-lightness/jquery-ui-1.10.2.custom.min.css" />
+
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="externalLibs/bootstrap/docs/assets/ico/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="externalLibs/bootstrap/docs/assets/ico/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="externalLibs/bootstrap/docs/assets/ico/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="externalLibs/bootstrap/docs/assets/ico/apple-touch-icon-57-precomposed.png">
+  <link rel="shortcut icon" href="externalLibs/bootstrap/docs/assets/ico/favicon.png">
+
+  <link href="css/home.css" rel="stylesheet" type="text/css">
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">JmsChirp</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+              Logged in as <a href="#" class="navbar-link">Username</a>
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3 offset1">
+          <div class="well sidebar-nav">
+            <div class="welcomeDiv"><img src="images/birds1.jpg">
+            <br/>
+            <br/>
+            <h4>A JMS browser for everybody.   
+            </h4>
+            <p>
+              <i>Create or Select a connection on the right.</i>
+            </p>
+            </div>
+
+          </div>
+        </div>
+        <div class="span4">
+          <div class="well sidebar-nav mainConnectionsDiv">
+            <!-- <div id="connectionListDiv" class="connectionListDiv"> -->
+            <ul id="connectionsUL" class="nav nav-list">
+            </ul>
+           <!-- </div> -->
+          </div><!--/.well -->
+        </div><!--/span-->
+
+        <div class="span1">
+            <div class="btn-group customButtonDiv">
+                <button id="newConnection" class="btn btn-primary btn-large dropdown-toggle" data-toggle="dropdown">New connection</button>   
+          </div>
+      </div>
+        
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; Binita Bharati 2013</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- jquery UI modal dialog - start -->
+  <div class="container-fluid">
+  <div id="connectionDialog" class="dialogForm" title="Connection details">
+   <p class="validateTips">All fields marked with asterisk are mandatory</p>
+ 
+    <form>
+    <fieldset>
+      <label for="connectionName">Name &nbsp<span class="mandatoryIcon"></span></label>
+      <input type="text" name="connectionName" id="connectionName" class="text ui-widget-content ui-corner-all" title="Connection name"/>
+       <div class="row-fluid">
+        <div class="span4">   
+                  <label for="connectionVendorType">Provider &nbsp<span class="mandatoryIcon"></span></label>
+                  <select id="connectionVendorType" title="Jms provider category.Select from drop-down" class=""> 
+                  </select>
+        </div>
+        <div class="span5 offset2">
+                  <label for="connectionVendorVersion">Provider version &nbsp<span class="mandatoryIcon"></span></label>
+                  <select id="connectionVendorVersion" class="connectionVendorVersion" title="Jms provider version"> 
+                  </select>
+        </div>
+      </div>   
+      <div class="row-fluid">
+          <div class="span3">
+                <label for="host">Host &nbsp<span class="mandatoryIcon"></span></label>
+                <input type="text" name="host" id="connectionHost" value="" class="text ui-widget-content ui-corner-all" title="Jms provider host"/>
+          </div>
+          <div class="span2 offset3">
+                <label for="port">Port &nbsp<span class="mandatoryIcon"></span></label>
+                <input type="text" name="port" id="connectionPort" class="connectionPort" value="" class="text ui-widget-content ui-corner-all" title="Jms provider port"/>
+          </div>
+    </div>
+    <!-- <div class="row-fluid">
+          <div class="span3"> -->
+              <label for="user">Admin user &nbsp<span class="mandatoryIcon"></span></label>
+              <input type="text" name="user" id="connectionUser" value="" class="text ui-widget-content ui-corner-all" title="Jms provider user"/>
+          <!-- </div>
+        <div class="span3 offset3"> -->
+            <label for="password">Admin password &nbsp</label>
+            <input type="password" name="password" id="connectionPassword" class="connectionPassword" value="" class="text ui-widget-content ui-corner-all" title="Jms provider password"/>
+       <!-- </div>
+  </div> -->
+  <br/>
+  <label for="jndi">JNDI</label>
+      <div id="jndiInfo" class="jmxInfo">
+        <div class="jmxInnerDiv">
+        <label for="jndiName" id="jndiNameLabel">Name &nbsp<!-- <span class="mandatoryIcon">*</span> --></label>
+        <input type="text" name="jndiName" id="jndiName" value="" class="text ui-widget-content ui-corner-all" title="JNDI name"/>
+         <div class="row-fluid">
+          <div class="span3">
+              <label for="jndiUser">User &nbsp<!-- <span class="mandatoryIcon">*</span> --></label>
+              <input type="text" name="jndiUser" id="jndiUser" value="" class="text ui-widget-content ui-corner-all" title="JNDI security principal"/>
+          </div>
+        <div class="span3 offset3">
+            <label for="jndiPassword">Password &nbsp</label>
+            <input type="password" name="jndiPassword" id="jndiPassword" class="jmxPassword" value="" class="text ui-widget-content ui-corner-all" title="JNDI security credentials"/>
+       </div>
+  </div>
+  </div>
+</div>
+<br/>
+  <label for="jmxInfo">JMX</label>
+      <div id="jmxInfo" class="jmxInfo">
+        <div class="jmxInnerDiv">
+        <label for="jmxPort">Port &nbsp<!-- <span class="mandatoryIcon">*</span> --></label>
+        <input type="text" name="jmxPort" id="jmxPort" value="" class="text ui-widget-content ui-corner-all connectionPort" title="JMX port"/>
+         <div class="row-fluid">
+          <div class="span3">
+              <label for="jmxUser">User &nbsp<!-- <span class="mandatoryIcon">*</span> --></label>
+              <input type="text" name="jmxUser" id="jmxUser" value="" class="text ui-widget-content ui-corner-all" title="JMX user"/>
+          </div>
+        <div class="span3 offset3">
+            <label for="jmxPassword">Password &nbsp</label>
+            <input type="password" name="jmxPassword" id="jmxPassword" class="jmxPassword" value="" class="text ui-widget-content ui-corner-all" title="JMX password"/>
+       </div>
+  </div>
+  </div>
+</div>
+</fieldset>
+</form>
+</div>
+</div>
+ <!-- jquery UI modal dialog - end -->
+
+    <!-- Handlebar js for client side templating - start -->
+
+   
+    <script id="connectionsUL-template" type="x-handlebars-template">
+    <li id="connectionsListItem-{{itemCount}}" class="connectionsListItem">  
+        <div id="listItemContentDiv-{{itemCount}}" class="listItemContentDiv">
+            <span class="connectionIconSpan"></span>
+            &nbsp
+            <div class="connectListAnchorDiv">
+            <a id="leftTabConnectionListAnchor-{{itemCount}}" class="homeConnectionListanchor" href="templates/connectionDetails.html?name={{jmsConnectionName}}">{{jmsConnectionName}}</a>
+            </div>
+        </div>
+    </li>
+    </script> 
+
+    <script id="connectionsTabListing-template" type="x-handlebars-template">
+        <li id="tabConnection-{{jmsConnectionId}}" class="connectionsTabData">{{jmsConnectionName}}</li>
+    </script> 
+
+      <script id="connectionsListItemHover-template" type="x-handlebars-template">
+       <div id="{{connectionsListItemHoverId}}" class="hoverDiv">
+          <img id="{{editHoverId}}" class="cursor1 editConnection" src="images/edit1_24.png" title="Edit" height="24" width="24">
+          <img id="{{deleteHoverId}}" class="cursor1 deleteConnection" src="images/delete2_24.png" title="Delete" height="24" width="24" onclick=''>
+        </div>
+    </script> 
+
+     <script id="emptyConnectionList-template" type="x-handlebars-template">
+      <div id="emptyConnectionListDiv" class="emptyConnectionListDiv">
+         <p> No connection found. Create a new connection.</p>
+      </div>
+    </script> 
+
+    <!-- Handlebar js for client side templating - end -->   
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="externalLibs/jquery/jquery.js" type="text/javascript"></script>
+    
+    <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-transition.js"></script>
+    <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-alert.js"></script>
+    <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-modal.js"></script>
+    <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-dropdown.js"></script>
+    <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-scrollspy.js"></script>
+    <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-tab.js"></script>
+    <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-tooltip.js"></script>
+    <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-popover.js"></script>
+    <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-button.js"></script>
+    <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-collapse.js"></script>
+    <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-carousel.js"></script>
+    <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-typeahead.js"></script>
+
+    <script src="externalLibs/jqueryui/jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
+    <script src="externalLibs/jquery/jquery.cookie.js" type="text/javascript"></script>
+
+
+     <script src="externalLibs/handlebar/handlebar.js"></script>
+
+    <script src="js/common.js"></script>
+
+     <script src="js/home.js"></script> 
+
+     <script type="text/javascript">
+        var globalHomePageParams = {};//globalHomePageParams['homeTabMap']
+
+    
+     </script>
+
+  </body>
+</html>
