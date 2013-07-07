@@ -76,6 +76,7 @@ body {
 {
 	float: right;
 	margin-top: 15px;
+    padding-right: 10px;
 }
 .cursor1
 {
@@ -161,4 +162,9 @@ background:#dddddd;
     float: left;
     height: 16px;
     width: 16px;
+}
+
+.connectionsUL
+{
+    padding: 0px;
 }
