@@ -10,6 +10,7 @@ body {
 
 .connectionIconSpan
 {
+    /* http://findicons.com/icon/163838/server_connect?id=165070 */
 	background-image: url("../images/connection4.png");
     background-position: 100% 50%;
     background-repeat: no-repeat;
