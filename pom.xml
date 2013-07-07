@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>binitabharati.jmschirp</groupId>
   <artifactId>jmschirp</artifactId>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>jmschirp</name>
   <url>http://maven.apache.org</url>
@@ -88,7 +88,7 @@
  
  <build>
   <!-- war name -->
-  <!-- <finalName>jmschirp</finalName> -->
+  <finalName>jmschirp</finalName>
     <plugins>
       <!-- <plugin>            
           <groupId>org.apache.maven.plugins</groupId>

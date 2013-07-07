@@ -2,7 +2,6 @@ package bbharati.jmschirp.provider.activemq;
 
 import bbharati.jmschirp.provider.ProviderInfo;
 import bbharati.jmschirp.provider.ProviderInterface;
-import bbharati.jmschirp.util.AppLogger;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.advisory.DestinationSource;
 import org.apache.activemq.broker.jmx.BrokerViewMBean;
@@ -23,7 +22,7 @@ import javax.management.remote.JMXServiceURL;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.*;
-
+import org.apache.log4j.Logger;
 /**
  * Created with IntelliJ IDEA.
  * User: binita.bharati@gmail.com
@@ -33,6 +32,9 @@ import java.util.*;
  *
  */
 public class ActiveMQProviderImpl implements ProviderInterface {
+    
+    private static final Logger logger = Logger.getLogger(ActiveMQProviderImpl.class);
+
     public volatile ProviderInfo info = null;
     private static MBeanServerConnection serverConnection;
     private static JMXConnector jmxConnector;
@@ -92,7 +94,7 @@ public class ActiveMQProviderImpl implements ProviderInterface {
 
                 long queueSize = (Long)connection.getAttribute(eachQObjectName, "QueueSize");
                 long MemoryUsageByteCount = (Long)connection.getAttribute(eachQObjectName, "MemoryUsageByteCount");
-                AppLogger.info("eachQObjectName = "+eachQObjectName+", queueSize = "+queueSize+", MemoryUsageByteCount = "+MemoryUsageByteCount);
+                logger.info("eachQObjectName = "+eachQObjectName+", queueSize = "+queueSize+", MemoryUsageByteCount = "+MemoryUsageByteCount);
                 LinkedHashMap<String, String> innerMap = new LinkedHashMap<String, String>() ;
                 innerMap.put("name", queueName);
                 innerMap.put("pendingMessageCount", queueSize+"");
