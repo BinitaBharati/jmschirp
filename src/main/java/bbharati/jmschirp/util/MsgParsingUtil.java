@@ -1,9 +1,9 @@
 package bbharati.jmschirp.util;
 
+import bbharati.jmschirp.dynatree.node.model.DynaTreeNode;
+
 import java.lang.reflect.Field;
 import java.util.*;
-
-import bbharati.jmschirp.dynatree.node.model.DynaTreeNode;
 
 /**
  * Created with IntelliJ IDEA.
@@ -311,102 +311,94 @@ public class MsgParsingUtil {
         DynaTreeNode retNode = new DynaTreeNode();
         retNode.setTitle(eachField.getName());
 
-        DynaTreeNode[] childNodeList = null;
+        List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
 
         if(eachField.getType().getName().equals("[Z"))
         {
              boolean[] boolAry = (boolean[])eachField.get(object);
-            childNodeList = new DynaTreeNode[boolAry.length];
 
              for (int i = 0 ; i < boolAry.length ; i++)
              {
                  DynaTreeNode childNode = new DynaTreeNode();
                  childNode.setTitle("["+i+"] = "+boolAry[i]);
-                 childNodeList[i] = childNode;
+                 childNodeList.add(childNode);
              }
         }
         else if(eachField.getType().getName().equals("[B"))
         {
             byte[] byteAry = (byte[])eachField.get(object);
-            childNodeList = new DynaTreeNode[byteAry.length];
 
             for (int i = 0 ; i < byteAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+byteAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().equals("[C"))
         {
             char[] charAry = (char[])eachField.get(object);
-            childNodeList = new DynaTreeNode[charAry.length];
 
             for (int i = 0 ; i < charAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+charAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().equals("[D"))
         {
             double[] dblAry = (double[])eachField.get(object);
-            childNodeList = new DynaTreeNode[dblAry.length];
 
             for (int i = 0 ; i < dblAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+dblAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().equals("[F"))
         {
             float[] floatAry = (float[])eachField.get(object);
-            childNodeList = new DynaTreeNode[floatAry.length];
 
             for (int i = 0 ; i < floatAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+floatAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().equals("[I"))
         {
             int[] intAry = (int[])eachField.get(object);
-            childNodeList = new DynaTreeNode[intAry.length];
 
             for (int i = 0 ; i < intAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+intAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().equals("[J"))
         {
             long[] longAry = (long[])eachField.get(object);
-            childNodeList = new DynaTreeNode[longAry.length];
 
             for (int i = 0 ; i < longAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+longAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().equals("[S"))
         {
             short[] shortAry = (short[])eachField.get(object);
-            childNodeList = new DynaTreeNode[shortAry.length];
 
             for (int i = 0 ; i < shortAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+shortAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         retNode.setIsFolder(true);
@@ -477,114 +469,105 @@ public class MsgParsingUtil {
         DynaTreeNode retNode = new DynaTreeNode();
         retNode.setTitle(eachField.getName());
 
-        DynaTreeNode[] childNodeList = null;
+        List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
 
         if(eachField.getType().getName().indexOf("java.lang.Boolean") != -1)
         {
             Boolean[] boolAry = (Boolean[])eachField.get(object);
-            childNodeList = new DynaTreeNode[boolAry.length];
 
             for (int i = 0 ; i < boolAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+boolAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().indexOf("java.lang.Byte") != -1)
         {
             Byte[] byteAry = (Byte[])eachField.get(object);
-            childNodeList = new DynaTreeNode[byteAry.length];
 
             for (int i = 0 ; i < byteAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+byteAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().indexOf("java.lang.Character") != -1)
         {
             Character[] charAry = (Character[])eachField.get(object);
-            childNodeList = new DynaTreeNode[charAry.length];
 
             for (int i = 0 ; i < charAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+charAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().indexOf("java.lang.Double") != -1)
         {
             Double[] dblAry = (Double[])eachField.get(object);
-            childNodeList = new DynaTreeNode[dblAry.length];
 
             for (int i = 0 ; i < dblAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+dblAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().indexOf("java.lang.Float") != -1)
         {
             Float[] floatAry = (Float[])eachField.get(object);
-            childNodeList = new DynaTreeNode[floatAry.length];
 
             for (int i = 0 ; i < floatAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+floatAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().indexOf("java.lang.Integer") != -1)
         {
             Integer[] intAry = (Integer[])eachField.get(object);
-            childNodeList = new DynaTreeNode[intAry.length];
 
             for (int i = 0 ; i < intAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+intAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().indexOf("java.lang.Long") != -1)
         {
             Long[] longAry = (Long[])eachField.get(object);
-            childNodeList = new DynaTreeNode[longAry.length];
 
             for (int i = 0 ; i < longAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+longAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().indexOf("java.lang.Short") != -1)
         {
             Short[] shortAry = (Short[])eachField.get(object);
-            childNodeList = new DynaTreeNode[shortAry.length];
 
             for (int i = 0 ; i < shortAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+shortAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
         else if(eachField.getType().getName().indexOf("java.lang.String") != -1)
         {
             String[] shortAry = (String[])eachField.get(object);
-            childNodeList = new DynaTreeNode[shortAry.length];
 
             for (int i = 0 ; i < shortAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
                 childNode.setTitle("["+i+"] = "+shortAry[i]);
-                childNodeList[i] = childNode;
+                childNodeList.add(childNode);
             }
         }
 
@@ -602,14 +585,13 @@ public class MsgParsingUtil {
         DynaTreeNode retNode = new DynaTreeNode();
         retNode.setTitle(eachField.getName());
 
-        DynaTreeNode[] childNodeList = null;
+        List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
 
         if(Collection.class.isAssignableFrom(eachField.getType()))
         {
             Collection<?> coll = (Collection<?>)eachField.get(object);
 
             Iterator<?> collItr = coll.iterator();
-            childNodeList = new DynaTreeNode[coll.size()] ;
             int index = 0;
             while (collItr.hasNext())
             {
@@ -624,7 +606,7 @@ public class MsgParsingUtil {
                 {
                       DynaTreeNode childNode = new DynaTreeNode();
                       childNode.setTitle("["+index+"] = "+eachItem);
-                      childNodeList[index] = childNode;
+                      childNodeList.add(childNode);
                       index++;
                 }
             }
@@ -641,7 +623,7 @@ public class MsgParsingUtil {
         DynaTreeNode retNode = new DynaTreeNode();
         retNode.setTitle(eachField.getName());
 
-        List<DynaTreeNode> childNodeList = null;
+        List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
 
         if(Map.class.isAssignableFrom(eachField.getType()))
         {
@@ -860,7 +842,7 @@ public class MsgParsingUtil {
 
         while(mapItr.hasNext())
         {
-            Object mapKey = mapItr.next();
+            String mapKey = (String)mapItr.next();
             DynaTreeNode mapNode = new DynaTreeNode();
             mapNode.setTitle(mapKey);
 
