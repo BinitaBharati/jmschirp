@@ -36,12 +36,15 @@ body {
 .homeConnectionListanchor
 {
 	margin-top: 2px;
+    word-wrap: break-word;
 }
 
 .connectListAnchorDiv
 {
 	float: right; 
 	margin-top: 4px;
+    width: 300px;
+    word-wrap: break-word;
 }
 
 /*connectionsListItem:hover
@@ -75,8 +78,9 @@ body {
 .hoverDiv
 {
 	float: right;
-	margin-top: 15px;
-    padding-right: 10px;
+	//margin-top: 15px;
+    padding-right: 15px;
+    display: none;
 }
 .cursor1
 {
