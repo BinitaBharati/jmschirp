@@ -215,12 +215,20 @@
    
     <script id="connectionsUL-template" type="x-handlebars-template">
     <li id="connectionsListItem-{{itemCount}}" class="connectionsListItem">  
-        <div id="listItemContentDiv-{{itemCount}}" class="listItemContentDiv">
+         <div id="listItemContentDiv-{{itemCount}}" class="row-fluid listItemContentDiv">
+            <div class="span5">
             <span class="connectionIconSpan"></span>
             &nbsp
-            <div class="connectListAnchorDiv">
+            <!-- <div class="connectListAnchorDiv"> -->
             <a id="leftTabConnectionListAnchor-{{itemCount}}" class="homeConnectionListanchor" href="templates/connectionDetails.html?name={{jmsConnectionName}}">{{jmsConnectionName}}</a>
+            <!-- </div> -->
             </div>
+            <div class="span7">
+            <div id="rightDiv-{{itemCount}}" class="hoverDiv">
+              <img id="editHoverId-{{itemCount}}" class="cursor1 editConnection" src="images/edit1_24.png" title="Edit" height="24" width="24">
+              <img id="deleteHoverId-{{itemCount}}" class="cursor1 deleteConnection" src="images/delete2_24.png" title="Delete" height="24" width="24" onclick=''>
+            </div>
+        </div>
         </div>
     </li>
     </script> 

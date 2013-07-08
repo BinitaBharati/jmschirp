@@ -460,8 +460,9 @@ $(document).ready(function ()
 
      console.log('connectionsListItem: mouseenter - index = '+index);
 
-     $("#connectionsListItem-"+index).append(HANDLEBAR_TEMPLATES.connectionsListItemHover({connectionsListItemHoverId : 'hoverDiv-'+index, editHoverId : 'editHoverId-'+index, 
-      deleteHoverId :'deleteHoverId-'+index , connectionName : "\'test\'"}));
+     /*$("#connectionsListItem-"+index).append(HANDLEBAR_TEMPLATES.connectionsListItemHover({connectionsListItemHoverId : 'hoverDiv-'+index, editHoverId : 'editHoverId-'+index, 
+      deleteHoverId :'deleteHoverId-'+index , connectionName : "\'test\'"}));*/
+     $("#rightDiv-"+index).css("display","block");
      $("#connectionsListItem-"+index).addClass('connectionsListItemHover');
 
 
@@ -475,7 +476,8 @@ $(document).ready(function ()
 
      console.log('connectionsListItem: mouseenter - index = '+index);
 
-     $("#hoverDiv-"+index).remove();
+     //$("#hoverDiv-"+index).remove();
+     $("#rightDiv-"+index).css("display","none");
      $("#connectionsListItem-"+index).removeClass('connectionsListItemHover');
 
     });
