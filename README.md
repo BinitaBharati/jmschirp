@@ -12,7 +12,7 @@ As of now, JMSChirp caters to the following JMS vendors:
 Todo
 
 ### Proprietary vendor support
-Proprietary vendor jars (like Tibco EMS jars) arent available in public. The user requiring proprietary vendor support need to  build the solution jar themselves.Outlined below are the steps to achieve this:
+Proprietary vendor jars (like Tibco EMS jars) arent available in public. The user requiring proprietary vendor support needs to  build the solution jar themselves.Outlined below are the steps to achieve this:
 * Clone this repo to the local machine.
 * cd to the cloned directory (jmschirp).
 * Edit the *packaging* from *war* to *jar* in the pom.xml.   
@@ -38,7 +38,7 @@ mvn install:install-file -Dfile=/x/y/tibjmsadmin.jar -DgroupId=com.tibco -Dartif
 mvn clean package
 ```
 * The above step will generate the vendor solution jar (jmschirp-provider-tibcoems-1.0.jar).
-* This should be added to the classpath of the web container.
+* The tibems.jar, tibjmsadmin.jar and the afore generated jmschirp-provider-tibcoems-1.0.jar should be added to the classpath of the web container.
 
 
 ## Usage
