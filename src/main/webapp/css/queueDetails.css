@@ -35,4 +35,10 @@
 .msgId
 {
   color: #0088CC;
+  cursor: pointer;
+}
+
+.msgId:hover
+{
+  text-decoration: underline;
 }

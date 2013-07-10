@@ -10,7 +10,15 @@
 .connectionsListQItem
 {   
     list-style: none;
-    padding: 8px;    
+    padding: 8px; 
+    color: #0088CC;
+    cursor: pointer;
+
+}
+
+.connectionsListQItem:hover
+{
+    text-decoration: underline
 }
 
 .queueIconSpan

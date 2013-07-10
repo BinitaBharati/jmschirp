@@ -168,7 +168,7 @@ tabs.tabs( "refresh" );
     
 });
 
- $(".queueListItem").click(function()
+ $(".queueListItem").click(function(event)
 {
     var clickedElementId = this.id.trim();//This is how you can get the ID of the dynamically generated element.
     //On click of queue name, browse the queue content
