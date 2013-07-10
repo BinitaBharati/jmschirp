@@ -38,9 +38,9 @@
           <th data-class="expand">
             <span>Queue</span>
           </th>
-          <th>
+          <!-- <th>
             <span>Action</span>
-          </th>
+          </th> -->
           <th data-hide="phone,tablet">
             Msg Count
           </th>
@@ -69,13 +69,11 @@
         %>
         <tr>
           <td><%= jmsQueueList[i].name%></td>
-          <td>
-            <a href="../templates/queueDetails2.html?connection=<%= jmsConnectionName %>&queue=<%= jmsQueueList[i].name %>">
+          <!-- <td>
+            <a href="../templates/queueDetails.html?connection=<%= jmsConnectionName %>&queue=<%= jmsQueueList[i].name %>">
               Browse
             </a>
-            &nbsp &nbsp
-            <a href="">Search</a>
-          </td>
+          </td> -->
           <td><%= jmsQueueList[i].pendingMessageCount%></td>
           <td><%= jmsQueueList[i].pendingMessageSize%> bytes</td>
         </tr>

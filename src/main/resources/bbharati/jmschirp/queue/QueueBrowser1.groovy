@@ -163,9 +163,9 @@ class QueueBrowser1 {
             def retOp = new JsonBuilder(queueHouseKeepingData).toPrettyString();
             AppLogger.info('inspectQueue: exiting with retOp = '+retOp)
 
-            connection.close();
+            /* connection.close();
             session.close();
-            queueBrowser.close();
+            queueBrowser.close();*/
 
             return retOp
 

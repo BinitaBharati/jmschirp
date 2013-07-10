@@ -20,7 +20,7 @@
 
   <link href="../externalLibs/dynatree/skin-vista/ui.dynatree.css" rel="stylesheet" type="text/css">
   <link href="../css/connectionTab.css" rel="stylesheet" type="text/css">
-  <link href="../css/queueDetails.css" rel="stylesheet" type="text/css">
+  <!-- <link href="../css/queueDetails.css" rel="stylesheet" type="text/css"> -->
 
   <script src="../externalLibs/jquery/jquery.js" type="text/javascript"></script>
     <script src="../externalLibs/jqueryui/jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
@@ -48,6 +48,10 @@
 
      <script src="../js/common.js" type="text/javascript"></script>
      <script src="../js/queueDetails.js" type="text/javascript"></script>
+
+      <link href="../css/queueDetails.css" rel="stylesheet" type="text/css">
+
+
     
 </head>
   <body>
@@ -209,7 +213,7 @@
                var tdData1 = document.createElement("td");
                tdData1.id=queueName+"-msgLinkTd-"+lastRetrievedMsgIndex;
                
-               tdData1.innerHTML = '<div class="msgLinkDiv" id="'+queueName+'-msgLinkDiv-'+lastRetrievedMsgIndex+'"><a id="'+queueName+'-msgId-'+lastRetrievedMsgIndex+'" class="msgId" href="#" onclick="onMsgLinkClick(this, \\''+queueName+'\\')">'+msgData[i].JMSMessageID+'</a>';
+               tdData1.innerHTML = '<div class="msgLinkDiv" id="'+queueName+'-msgLinkDiv-'+lastRetrievedMsgIndex+'"><a id="'+queueName+'-msgId-'+lastRetrievedMsgIndex+'" class="msgId" style="color: #0088CC" href="#" onclick="onMsgLinkClick(this, \\''+queueName+'\\')">'+msgData[i].JMSMessageID+'</a>';
 
 
                var tdData2 = document.createElement("td");
@@ -271,7 +275,7 @@
   </script>
 
    <!-- Handlebar js for client side templating - start -->
-    <script id="msgDetailsDiv-template" type="x-handlebars-template">
+    <!-- <script id="msgDetailsDiv-template" type="x-handlebars-template">
 
        <div id={{msgDetailsDivId}} class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-dialog-buttons ui-draggable ui-resizable" style="position: absolute; height: auto; width: 350px; top: 106px; left: 774px; display: block;" tabindex="-1" role="dialog" aria-describedby="connectionDialog" aria-labelledby="ui-id-1">
             <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
@@ -285,9 +289,8 @@
             </div>
        </div>
 
-    </script> 
-
-    <script id="msgDetailsDiv-template1" type="x-handlebars-template">
+     </script> -->
+       <!-- <script id="msgDetailsDiv-template1" type="x-handlebars-template">
           <div id="{{msgDetailsDivId}}" class="msgDetailsDiv">
                  <button id="{{msgDetailsButtonId}}" class="ui-button ui-widget ui-state-default ui-corner-all closeIcon" role="button" aria-disabled="false" title="close">
                     <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
@@ -295,7 +298,15 @@
                <div id={{msgDivTreeId}}>
                </div>    
            </div>   
-    </script>
+         </script> -->
+
+          <script id="msgDetailsDiv-template1" type="x-handlebars-template">
+          <div id="{{msgDetailsDivId}}" class="msgDetailsDiv">
+                    <span  id="{{msgDetailsButtonId}}" class="closeIcon"></span>
+               <div id={{msgDivTreeId}}>
+               </div>    
+           </div>   
+         </script>
 
     <script id="progressBarTemplate" type="x-handlebars-template">
     <div id="progressBar" class="ui-progressbar ui-widget ui-widget-content ui-corner-all ui-progressbar-indeterminate" role="progressbar" aria-valuemin="0">

@@ -6,7 +6,7 @@ $(function() {
 
 
        HANDLEBAR_TEMPLATES = {
-         msgDetailsDivTmpl :   Handlebars.compile($("#msgDetailsDiv-template").html()) ,
+        // msgDetailsDivTmpl :   Handlebars.compile($("#msgDetailsDiv-template").html()) ,
          msgDetailsDivTmpl1 :   Handlebars.compile($("#msgDetailsDiv-template1").html()) ,
          progressBarTemplate :   Handlebars.compile($("#progressBarTemplate").html()) 
 

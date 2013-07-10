@@ -11,9 +11,11 @@
 }
 .closeIcon
 {
-	width: 1.4em;
-	height: 1.1em;
-	float: right;
+    height: 16px;
+    width: 16px;
+    float: right;
+    background-image: url("../images/small_cross2.png");
+ 
 }
 
 .progressBar1
@@ -25,9 +27,12 @@
 {
 		background-color: white;
 		padding: 10px;
-		height: 100%;
 		overflow: auto;
 		padding: 3px;
-		white-space: nowrap;
+		word-wrap: break-word;
+}
 
+.msgId
+{
+  color: #0088CC;
 }
