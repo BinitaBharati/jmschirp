@@ -5,6 +5,7 @@ import bbharati.jmschirp.provider.ProviderMapping
 import bbharati.jmschirp.util.AppLogger
 import bbharati.jmschirp.util.ConnectionUtil
 import bbharati.jmschirp.util.MsgParsingUtil
+import bbharati.jmschirp.util.PackageNamingUtil
 import groovy.json.JsonBuilder
 
 import javax.jms.*
@@ -79,8 +80,12 @@ class MsgBrowser {
                 {
 
                     ObjectMessage objMsg = (ObjectMessage)msg;
+                    Object obj1 = objMsg.getObject()
 
-                    def dynaTreeList = MsgParsingUtil.parseCustomObject(objMsg.getObject())
+                    MsgParsingUtil msgParsingUtil = new MsgParsingUtil()
+                    msgParsingUtil.setCustomObjectTopLevelPkg(PackageNamingUtil.getTopLevelPackages(obj1.getClass().getName()))
+
+                    def dynaTreeList = msgParsingUtil.parseCustomObject(obj1)
 
                     //def dynaTreeJsonStr = new JsonBuilder(dynaTreeList).toPrettyString();
                     AppLogger.info('inspectMsg: exiting with dynaTreeList = '+dynaTreeList)

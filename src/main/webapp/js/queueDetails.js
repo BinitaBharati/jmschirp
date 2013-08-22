@@ -77,7 +77,6 @@ $(function() {
 
                    });
 
-
                   if (xmlhttpResponse.status == 200)
                   {
                      var jsonResponse = JSON.parse(xmlhttpResponse.responseText);

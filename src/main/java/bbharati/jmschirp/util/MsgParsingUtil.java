@@ -1,9 +1,9 @@
 package bbharati.jmschirp.util;
 
-import bbharati.jmschirp.dynatree.node.model.DynaTreeNode;
-
 import java.lang.reflect.Field;
 import java.util.*;
+
+import bbharati.jmschirp.dynatree.node.model.DynaTreeNode;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,14 +11,40 @@ import java.util.*;
  * Date: 11/06/13
  * Time: 8:52 AM
  * To change this template use File | Settings | File Templates.
+ *
+ * Class, Field modifier types
+ * Modifier and Type		ConstantField	Value
+ public static final int		ABSTRACT	1024
+ public static final int		FINAL	 	16
+ public static final int		INTERFACE	512
+ public static final int		NATIVE		256
+ public static final int		PRIVATE		2
+ public static final int		PROTECTED	4
+ public static final int		PUBLIC		1
+ public static final int		STATIC		8
+ public static final int		STRICT		2048
+ public static final int		SYNCHRONIZED	32
+ public static final int		TRANSIENT	128
+ public static final int		VOLATILE	64
  */
 public class MsgParsingUtil {
 
+    private String customObjectTopLevelPkg;
+
     private static List<String> oobCollectionClassNames ;
+
 
     static {
         oobCollectionClassNames = new ArrayList<String>();
         oobCollectionClassNames.add("");
+    }
+
+    public String getCustomObjectTopLevelPkg() {
+        return customObjectTopLevelPkg;
+    }
+
+    public void setCustomObjectTopLevelPkg(String customObjectTopLevelPkg) {
+        this.customObjectTopLevelPkg = customObjectTopLevelPkg;
     }
 
     /**
@@ -29,13 +55,17 @@ public class MsgParsingUtil {
      * Primitive arrays have a [ , and no dot(.)  character
      *
      */
-    public static boolean isPrimitive(String eachFieldClassName)
+    public boolean isPrimitive(String eachFieldClassName)
     {
-        if(eachFieldClassName.indexOf(".") == -1 && eachFieldClassName.indexOf("[") == -1)
+        if(eachFieldClassName != null)
         {
-            //a pure primitive type
-            return  true;
+            if(eachFieldClassName.indexOf(".") == -1 && eachFieldClassName.indexOf("[") == -1)
+            {
+                //a pure primitive type
+                return  true;
+            }
         }
+
         return false;
 
     }
@@ -46,50 +76,17 @@ public class MsgParsingUtil {
      * @return
      * Primitive arrays have a [ , and no dot(.)  character
      */
-    public static boolean isPrimitiveArray(String eachFieldClassName)
+    public boolean isPrimitiveArray(String eachFieldClassName)
     {
-        if(eachFieldClassName.indexOf(".") == -1 && eachFieldClassName.indexOf("[") != -1)
+        if(eachFieldClassName != null)
         {
-            //a pure primitive array
-            return  true;
-        }
-        return false;
-    }
-
-    /**
-     *
-     * @param eachFieldClassName
-     * @return
-     */
-    public static boolean isObject(String eachFieldClassName)
-    {
-        if(eachFieldClassName.indexOf(".") != -1 && eachFieldClassName.indexOf("[L") == -1)
-        {
-             return true;
-        }
-        return false;
-    }
-
-    public static boolean isOOBObject(String eachFieldClassName)
-    {
-        if(eachFieldClassName.indexOf(".") != -1 && eachFieldClassName.indexOf("[L") == -1)
-        {
-            if(eachFieldClassName.indexOf("java.lang.Character") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.String") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.Integer") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.Boolean") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.Byte") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.Long") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.Float") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.Double") != -1  ||
-                    eachFieldClassName.indexOf("java.lang.Short") != -1
-                    )
+            if(eachFieldClassName.indexOf(".") == -1 && eachFieldClassName.indexOf("[") != -1)
             {
+                //a pure primitive array
                 return  true;
             }
-
-
         }
+
         return false;
     }
 
@@ -97,44 +94,18 @@ public class MsgParsingUtil {
      *
      * @param eachFieldClassName
      * @return
-     * All Object arrays start with [L
-     */
-    public static boolean isObjectArray(String eachFieldClassName)
-    {
-        if(eachFieldClassName.indexOf(".") != -1 && eachFieldClassName.indexOf("[L") != -1)
-        {
-            //a object array
-            return  true;
-        }
-        return false;
-    }
-
-    /**
      *
-     * @param eachFieldClassName
-     * @return
-     * All Object arrays start with [L
      */
-    public static boolean isOOBObjectArray(String eachFieldClassName)
+    public boolean isObject(String eachFieldClassName)
     {
-        if(eachFieldClassName.indexOf(".") != -1 && eachFieldClassName.indexOf("[L") != -1)
+        if(eachFieldClassName != null)
         {
-            if(eachFieldClassName.indexOf("java.lang.Character") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.String") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.Integer") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.Boolean") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.Byte") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.Long") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.Float") != -1 ||
-                    eachFieldClassName.indexOf("java.lang.Double") != -1  ||
-                    eachFieldClassName.indexOf("java.lang.Short") != -1
-                    )
+            if(eachFieldClassName.indexOf(".") != -1 && eachFieldClassName.indexOf("[L") == -1)
             {
-                return  true;
+                return true;
             }
-
-
         }
+
         return false;
     }
 
@@ -143,104 +114,186 @@ public class MsgParsingUtil {
      * @param eachFieldClass
      * @return
      */
-    public static boolean isCollection(Class eachFieldClass)
+    public boolean isOOBObject(Class eachFieldClass)
     {
-        if(Collection.class.isAssignableFrom(eachFieldClass))
+        if(eachFieldClass != null)
         {
-              return true;
-        }
-        return false;
-    }
-
-    /**
-     *
-     * @param object
-     * @param eachField
-     * @return
-     * @throws Exception
-     */
-    public static boolean isOOBObjectCollection(Object object, Field eachField) throws Exception
-    {
-        if(Collection.class.isAssignableFrom(eachField.getType()))
-        {
-            Collection<?> coll = (Collection<?>)eachField.get(object);
-
-            Iterator<?> collItr = coll.iterator();
-
-            while (collItr.hasNext())
+            String eachFieldClassName = eachFieldClass.getName();
+            if(eachFieldClassName.indexOf(".") != -1 && eachFieldClassName.indexOf("[L") == -1)
             {
-                Object eachItem = collItr.next();
-                String eachItemClassName = eachItem.getClass().getName();
-
-                if(eachItemClassName.equals("java.lang.String") || eachItemClassName.equals("java.lang.Character")
-                        || eachItemClassName.equals("java.lang.Integer") || eachItemClassName.equals("java.lang.Boolean")
-                            || eachItemClassName.equals("java.lang.Byte") || eachItemClassName.equals("java.lang.Long")
-                                || eachItemClassName.equals("java.lang.Float") || eachItemClassName.equals("java.lang.Double")
-                                    || eachItemClassName.equals("java.lang.Short"))
+                if(!isCollection(eachFieldClass) && !isMap(eachFieldClass) )
                 {
-                    return true;//assuming all items in collection are of same type;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     *
-     * @param eachFieldClass
-     * @return
-     */
-    public static boolean isMap(Class eachFieldClass)
-    {
-        if(Map.class.isAssignableFrom(eachFieldClass))
-        {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     *
-     * @param object
-     * @param eachField
-     * @return
-     * @throws Exception
-     */
-    public static boolean isOOBObjectMap(Object object, Field eachField) throws Exception
-    {
-        if(Map.class.isAssignableFrom(eachField.getType()))
-        {
-            Map<?,?> map = (Map<?,?>)eachField.get(object);
-
-            Iterator<?> mapItr = map.keySet().iterator();
-
-            while (mapItr.hasNext())
-            {
-                Object eachKey = mapItr.next();
-                String eachKeyClassName = eachKey.getClass().getName();
-
-                if(eachKeyClassName.equals("java.lang.String") || eachKeyClassName.equals("java.lang.Character")
-                        || eachKeyClassName.equals("java.lang.Integer") || eachKeyClassName.equals("java.lang.Boolean")
-                        || eachKeyClassName.equals("java.lang.Byte") || eachKeyClassName.equals("java.lang.Long")
-                        || eachKeyClassName.equals("java.lang.Float") || eachKeyClassName.equals("java.lang.Double")
-                        || eachKeyClassName.equals("java.lang.Short"))
-                {
-                    Object mapVal = map.get(eachKey);
-
-                    String eachValClassName = mapVal.getClass().getName();
-
-                    if(eachValClassName.equals("java.lang.String") || eachValClassName.equals("java.lang.Character")
-                            || eachValClassName.equals("java.lang.Integer") || eachValClassName.equals("java.lang.Boolean")
-                            || eachValClassName.equals("java.lang.Byte") || eachValClassName.equals("java.lang.Long")
-                            || eachValClassName.equals("java.lang.Float") || eachValClassName.equals("java.lang.Double")
-                            || eachValClassName.equals("java.lang.Short"))
+                    if(eachFieldClassName.startsWith("java"))
                     {
-                          return true;
+                        return true;
                     }
-
                 }
+
+
             }
         }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param eachFieldClassName
+     * @return
+     * All Object arrays start with [L
+     */
+    public boolean isObjectArray(String eachFieldClassName)
+    {
+        if(eachFieldClassName != null)
+        {
+            if(eachFieldClassName.indexOf(".") != -1 && eachFieldClassName.indexOf("[L") != -1)
+            {
+                //a object array
+                return  true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param eachFieldClassName
+     * @return
+     * All Object arrays start with [L
+     */
+    public boolean isOOBObjectArray(String eachFieldClassName)
+    {
+        if(eachFieldClassName != null)
+        {
+            if(eachFieldClassName.indexOf(".") != -1 && eachFieldClassName.indexOf("[L") != -1)
+            {
+
+                if(eachFieldClassName.startsWith("java"))
+                {
+                    return true;
+                }
+
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param eachFieldClass
+     * @return
+     */
+    public boolean isCollection(Class eachFieldClass)
+    {
+        if(eachFieldClass != null)
+        {
+            if(Collection.class.isAssignableFrom(eachFieldClass))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param object
+     * @param eachField
+     * @return
+     * @throws Exception
+     */
+    public boolean isOOBObjectCollection(Object object, Field eachField) throws Exception
+    {
+        if(eachField != null)
+        {
+            if(Collection.class.isAssignableFrom(eachField.getType()))
+            {
+                Collection<?> coll = (Collection<?>)eachField.get(object);
+
+                if(coll != null)
+                {
+                    Iterator<?> collItr = coll.iterator();
+
+                    while (collItr.hasNext())
+                    {
+                        Object eachItem = collItr.next();
+                        String eachItemClassName = eachItem.getClass().getName();
+
+                        if(eachItemClassName.startsWith("java"))
+                        {
+                            return true;
+                        }
+                    }
+                }
+             }
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param eachFieldClass
+     * @return
+     */
+    public boolean isMap(Class eachFieldClass)
+    {
+        if(eachFieldClass != null)
+        {
+            if(Map.class.isAssignableFrom(eachFieldClass))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param object
+     * @param eachField
+     * @return
+     * @throws Exception
+     */
+    public boolean isOOBObjectMap(Object object, Field eachField) throws Exception
+    {
+        if(eachField != null)
+        {
+            if(Map.class.isAssignableFrom(eachField.getType()))
+            {
+                Map<?,?> map = (Map<?,?>)eachField.get(object);
+
+                if(map != null)
+                {
+                    Iterator<?> mapItr = map.keySet().iterator();
+
+                    while (mapItr.hasNext())
+                    {
+                        Object eachKey = mapItr.next();
+                        String eachKeyClassName = eachKey.getClass().getName();
+
+                        if(eachKeyClassName.startsWith("java"))
+                        {
+                            Object mapVal = map.get(eachKey);
+
+                            String eachValClassName = mapVal.getClass().getName();
+
+                            if(eachValClassName.startsWith("java"))
+                            {
+                                return true;
+                            }
+
+                        }
+                    }
+                }
+
+            }
+        }
+
         return false;
     }
 
@@ -252,47 +305,52 @@ public class MsgParsingUtil {
      * @return
      * @throws Exception
      */
-    public static DynaTreeNode parsePrimitiveField(Object object, Field eachField)  throws Exception
+    public DynaTreeNode parsePrimitiveField(Object object, Field eachField)  throws Exception
     {
-        DynaTreeNode dynaTreeNode = new DynaTreeNode();
+        DynaTreeNode dynaTreeNode = null;
+        if(eachField != null)
+        {
+             dynaTreeNode = new DynaTreeNode();
 
         /*To work around :  can not access a member of class bbharati.binita.jmschirp.test.TestObjMsg_Java with modifiers "private"
         */
-        eachField.setAccessible(true);
+            eachField.setAccessible(true);
 
-        if(eachField.getType().getName().equals("boolean"))
-        {
-            dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getBoolean(object));
+            if(eachField.getType().getName().equals("boolean"))
+            {
+                dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getBoolean(object));
+            }
+            else if(eachField.getType().getName().equals("byte"))
+            {
+                dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getInt(object));
+            }
+            else if(eachField.getType().getName().equals("char"))
+            {
+                dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getChar(object));
+            }
+            else if(eachField.getType().getName().equals("double"))
+            {
+                dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getDouble(object));
+            }
+            else if(eachField.getType().getName().equals("float"))
+            {
+                dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getFloat(object));
+            }
+            else if(eachField.getType().getName().equals("int"))
+            {
+                dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getInt(object));
+            }
+            else if(eachField.getType().getName().equals("long"))
+            {
+                dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getLong(object));
+            }
+            else if(eachField.getType().getName().equals("short"))
+            {
+                dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getShort(object));
+            }
+            eachField.setAccessible(false);
         }
-        else if(eachField.getType().getName().equals("byte"))
-        {
-            dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getInt(object));
-        }
-        else if(eachField.getType().getName().equals("char"))
-        {
-            dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getChar(object));
-        }
-        else if(eachField.getType().getName().equals("double"))
-        {
-            dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getDouble(object));
-        }
-        else if(eachField.getType().getName().equals("float"))
-        {
-            dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getFloat(object));
-        }
-        else if(eachField.getType().getName().equals("int"))
-        {
-            dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getInt(object));
-        }
-        else if(eachField.getType().getName().equals("long"))
-        {
-            dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getLong(object));
-        }
-        else if(eachField.getType().getName().equals("short"))
-        {
-            dynaTreeNode.setTitle(eachField.getName()+" = "+eachField.getShort(object));
-        }
-        eachField.setAccessible(false);
+
         return dynaTreeNode;
     }
 
@@ -304,440 +362,334 @@ public class MsgParsingUtil {
      * @return
      * @throws Exception
      */
-    public static DynaTreeNode parsePrimitiveArrays(Object object, Field eachField)  throws Exception
+    public DynaTreeNode parsePrimitiveArrays(Object object, Field eachField)  throws Exception
     {
-        eachField.setAccessible(true);
-
-        DynaTreeNode retNode = new DynaTreeNode();
-        retNode.setTitle(eachField.getName());
-
-        List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
-
-        if(eachField.getType().getName().equals("[Z"))
+        DynaTreeNode retNode = null;
+        if(eachField != null)
         {
-             boolean[] boolAry = (boolean[])eachField.get(object);
+            eachField.setAccessible(true);
 
-             for (int i = 0 ; i < boolAry.length ; i++)
-             {
-                 DynaTreeNode childNode = new DynaTreeNode();
-                 childNode.setTitle("["+i+"] = "+boolAry[i]);
-                 childNodeList.add(childNode);
-             }
-        }
-        else if(eachField.getType().getName().equals("[B"))
-        {
-            byte[] byteAry = (byte[])eachField.get(object);
+            retNode = new DynaTreeNode();
+            retNode.setTitle(eachField.getName());
 
-            for (int i = 0 ; i < byteAry.length ; i++)
+            List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
+
+            if(eachField.getType().getName().equals("[Z"))
             {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+byteAry[i]);
-                childNodeList.add(childNode);
-            }
-        }
-        else if(eachField.getType().getName().equals("[C"))
-        {
-            char[] charAry = (char[])eachField.get(object);
+                boolean[] boolAry = (boolean[])eachField.get(object);
 
-            for (int i = 0 ; i < charAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+charAry[i]);
-                childNodeList.add(childNode);
+                for (int i = 0 ; i < boolAry.length ; i++)
+                {
+                    DynaTreeNode childNode = new DynaTreeNode();
+                    childNode.setTitle("["+i+"] = "+boolAry[i]);
+                    childNodeList.add(childNode);
+                }
             }
-        }
-        else if(eachField.getType().getName().equals("[D"))
-        {
-            double[] dblAry = (double[])eachField.get(object);
+            else if(eachField.getType().getName().equals("[B"))
+            {
+                byte[] byteAry = (byte[])eachField.get(object);
 
-            for (int i = 0 ; i < dblAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+dblAry[i]);
-                childNodeList.add(childNode);
+                for (int i = 0 ; i < byteAry.length ; i++)
+                {
+                    DynaTreeNode childNode = new DynaTreeNode();
+                    childNode.setTitle("["+i+"] = "+byteAry[i]);
+                    childNodeList.add(childNode);
+                }
             }
-        }
-        else if(eachField.getType().getName().equals("[F"))
-        {
-            float[] floatAry = (float[])eachField.get(object);
+            else if(eachField.getType().getName().equals("[C"))
+            {
+                char[] charAry = (char[])eachField.get(object);
 
-            for (int i = 0 ; i < floatAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+floatAry[i]);
-                childNodeList.add(childNode);
+                for (int i = 0 ; i < charAry.length ; i++)
+                {
+                    DynaTreeNode childNode = new DynaTreeNode();
+                    childNode.setTitle("["+i+"] = "+charAry[i]);
+                    childNodeList.add(childNode);
+                }
             }
-        }
-        else if(eachField.getType().getName().equals("[I"))
-        {
-            int[] intAry = (int[])eachField.get(object);
+            else if(eachField.getType().getName().equals("[D"))
+            {
+                double[] dblAry = (double[])eachField.get(object);
 
-            for (int i = 0 ; i < intAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+intAry[i]);
-                childNodeList.add(childNode);
+                for (int i = 0 ; i < dblAry.length ; i++)
+                {
+                    DynaTreeNode childNode = new DynaTreeNode();
+                    childNode.setTitle("["+i+"] = "+dblAry[i]);
+                    childNodeList.add(childNode);
+                }
             }
-        }
-        else if(eachField.getType().getName().equals("[J"))
-        {
-            long[] longAry = (long[])eachField.get(object);
+            else if(eachField.getType().getName().equals("[F"))
+            {
+                float[] floatAry = (float[])eachField.get(object);
 
-            for (int i = 0 ; i < longAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+longAry[i]);
-                childNodeList.add(childNode);
+                for (int i = 0 ; i < floatAry.length ; i++)
+                {
+                    DynaTreeNode childNode = new DynaTreeNode();
+                    childNode.setTitle("["+i+"] = "+floatAry[i]);
+                    childNodeList.add(childNode);
+                }
             }
-        }
-        else if(eachField.getType().getName().equals("[S"))
-        {
-            short[] shortAry = (short[])eachField.get(object);
+            else if(eachField.getType().getName().equals("[I"))
+            {
+                int[] intAry = (int[])eachField.get(object);
 
-            for (int i = 0 ; i < shortAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+shortAry[i]);
-                childNodeList.add(childNode);
+                for (int i = 0 ; i < intAry.length ; i++)
+                {
+                    DynaTreeNode childNode = new DynaTreeNode();
+                    childNode.setTitle("["+i+"] = "+intAry[i]);
+                    childNodeList.add(childNode);
+                }
             }
+            else if(eachField.getType().getName().equals("[J"))
+            {
+                long[] longAry = (long[])eachField.get(object);
+
+                for (int i = 0 ; i < longAry.length ; i++)
+                {
+                    DynaTreeNode childNode = new DynaTreeNode();
+                    childNode.setTitle("["+i+"] = "+longAry[i]);
+                    childNodeList.add(childNode);
+                }
+            }
+            else if(eachField.getType().getName().equals("[S"))
+            {
+                short[] shortAry = (short[])eachField.get(object);
+
+                for (int i = 0 ; i < shortAry.length ; i++)
+                {
+                    DynaTreeNode childNode = new DynaTreeNode();
+                    childNode.setTitle("["+i+"] = "+shortAry[i]);
+                    childNodeList.add(childNode);
+                }
+            }
+            retNode.setIsFolder(true);
+            retNode.setChildren(childNodeList);
+            eachField.setAccessible(false);
         }
-        retNode.setIsFolder(true);
-        retNode.setChildren(childNodeList);
-        eachField.setAccessible(false);
+
         return retNode;
     }
 
-
-    public static DynaTreeNode parseOOBObject(Object object, Field eachField)  throws Exception
+    /**
+     *
+     * @param object
+     * @param eachField
+     * @return
+     * @throws Exception
+     * Parses OOB plain java Objects in java.* packages , except java.util.Collection and java.util.Map
+     */
+    public DynaTreeNode parseOOBObject(Object object, Field eachField)  throws Exception
     {
-        eachField.setAccessible(true);
-        DynaTreeNode dynaTreeNode = new DynaTreeNode();
+        DynaTreeNode dynaTreeNode = null;
+        if(eachField != null)
+        {
+            eachField.setAccessible(true);
+            dynaTreeNode = new DynaTreeNode();
+            dynaTreeNode.setTitle(eachField.getName()+"("+eachField.getType().getName()+") = "+eachField.get(object)+"");
 
-        if(eachField.getType().getName().equals("java.lang.Boolean"))
-        {
-            Boolean val = (Boolean)eachField.get(object)  ;
-            dynaTreeNode.setTitle(eachField.getName()+" = "+val);
+            eachField.setAccessible(false);
         }
-        else if(eachField.getType().getName().equals("java.lang.Byte"))
+        else
         {
-            Byte val = (Byte)eachField.get(object)  ;
-            dynaTreeNode.setTitle(eachField.getName()+" = "+val);
+            dynaTreeNode = new DynaTreeNode();
+            dynaTreeNode.setTitle(object+"");
+
         }
-        else if(eachField.getType().getName().equals("java.lang.Character"))
-        {
-            Character val = (Character)eachField.get(object)  ;
-            dynaTreeNode.setTitle(eachField.getName()+" = "+val);
-        }
-        else if(eachField.getType().getName().equals("java.lang.Double"))
-        {
-            Double val = (Double)eachField.get(object)  ;
-            dynaTreeNode.setTitle(eachField.getName()+" = "+val);
-        }
-        else if(eachField.getType().getName().equals("java.lang.Float"))
-        {
-            Float val = (Float)eachField.get(object)  ;
-            dynaTreeNode.setTitle(eachField.getName()+" = "+val);
-        }
-        else if(eachField.getType().getName().equals("java.lang.Integer"))
-        {
-            Integer val = (Integer)eachField.get(object)  ;
-            dynaTreeNode.setTitle(eachField.getName()+" = "+val);
-        }
-        else if(eachField.getType().getName().equals("java.lang.Long"))
-        {
-            Long val = (Long)eachField.get(object)  ;
-            dynaTreeNode.setTitle(eachField.getName()+" = "+val);
-        }
-        else if(eachField.getType().getName().equals("java.lang.Short"))
-        {
-            Short val = (Short)eachField.get(object)  ;
-            dynaTreeNode.setTitle(eachField.getName()+" = "+val);
-        }
-        else if(eachField.getType().getName().equals("java.lang.String"))
-        {
-            String val = (String)eachField.get(object)  ;
-            dynaTreeNode.setTitle(eachField.getName()+" = "+val);
-        }
-        eachField.setAccessible(false);
+
         return dynaTreeNode;
     }
 
 
-    public static DynaTreeNode parseOOBObjectArrays(Object object, Field eachField)  throws Exception
+    public DynaTreeNode parseOOBObjectArrays(Object object, Field eachField)  throws Exception
     {
-        eachField.setAccessible(true);
-        DynaTreeNode retNode = new DynaTreeNode();
-        retNode.setTitle(eachField.getName());
-
-        List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
-
-        if(eachField.getType().getName().indexOf("java.lang.Boolean") != -1)
+        DynaTreeNode retNode = null;
+        if(eachField != null)
         {
-            Boolean[] boolAry = (Boolean[])eachField.get(object);
+            eachField.setAccessible(true);
+            retNode = new DynaTreeNode();
+            retNode.setTitle(eachField.getName());
 
-            for (int i = 0 ; i < boolAry.length ; i++)
+            List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
+
+            Object[] objAry = (Object[])eachField.get(object);
+            for (int i = 0 ; i < objAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+boolAry[i]);
+                childNode.setTitle("["+i+"] = "+objAry[i]+"");
                 childNodeList.add(childNode);
             }
-        }
-        else if(eachField.getType().getName().indexOf("java.lang.Byte") != -1)
-        {
-            Byte[] byteAry = (Byte[])eachField.get(object);
 
-            for (int i = 0 ; i < byteAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+byteAry[i]);
-                childNodeList.add(childNode);
-            }
-        }
-        else if(eachField.getType().getName().indexOf("java.lang.Character") != -1)
-        {
-            Character[] charAry = (Character[])eachField.get(object);
-
-            for (int i = 0 ; i < charAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+charAry[i]);
-                childNodeList.add(childNode);
-            }
-        }
-        else if(eachField.getType().getName().indexOf("java.lang.Double") != -1)
-        {
-            Double[] dblAry = (Double[])eachField.get(object);
-
-            for (int i = 0 ; i < dblAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+dblAry[i]);
-                childNodeList.add(childNode);
-            }
-        }
-        else if(eachField.getType().getName().indexOf("java.lang.Float") != -1)
-        {
-            Float[] floatAry = (Float[])eachField.get(object);
-
-            for (int i = 0 ; i < floatAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+floatAry[i]);
-                childNodeList.add(childNode);
-            }
-        }
-        else if(eachField.getType().getName().indexOf("java.lang.Integer") != -1)
-        {
-            Integer[] intAry = (Integer[])eachField.get(object);
-
-            for (int i = 0 ; i < intAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+intAry[i]);
-                childNodeList.add(childNode);
-            }
-        }
-        else if(eachField.getType().getName().indexOf("java.lang.Long") != -1)
-        {
-            Long[] longAry = (Long[])eachField.get(object);
-
-            for (int i = 0 ; i < longAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+longAry[i]);
-                childNodeList.add(childNode);
-            }
-        }
-        else if(eachField.getType().getName().indexOf("java.lang.Short") != -1)
-        {
-            Short[] shortAry = (Short[])eachField.get(object);
-
-            for (int i = 0 ; i < shortAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+shortAry[i]);
-                childNodeList.add(childNode);
-            }
-        }
-        else if(eachField.getType().getName().indexOf("java.lang.String") != -1)
-        {
-            String[] shortAry = (String[])eachField.get(object);
-
-            for (int i = 0 ; i < shortAry.length ; i++)
-            {
-                DynaTreeNode childNode = new DynaTreeNode();
-                childNode.setTitle("["+i+"] = "+shortAry[i]);
-                childNodeList.add(childNode);
-            }
-        }
-
-        retNode.setIsFolder(true);
-
-        retNode.setChildren(childNodeList);
-        eachField.setAccessible(false);
-
-        return retNode;
-    }
-
-    public static DynaTreeNode parseOOBObjectCollection(Object object, Field eachField)  throws Exception
-    {
-        eachField.setAccessible(true);
-        DynaTreeNode retNode = new DynaTreeNode();
-        retNode.setTitle(eachField.getName());
-
-        List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
-
-        if(Collection.class.isAssignableFrom(eachField.getType()))
-        {
-            Collection<?> coll = (Collection<?>)eachField.get(object);
-
-            Iterator<?> collItr = coll.iterator();
-            int index = 0;
-            while (collItr.hasNext())
-            {
-                Object eachItem = collItr.next();
-                String eachItemClassName = eachItem.getClass().getName();
-
-                if(eachItemClassName.equals("java.lang.String") || eachItemClassName.equals("java.lang.Character")
-                        || eachItemClassName.equals("java.lang.Integer") || eachItemClassName.equals("java.lang.Boolean")
-                        || eachItemClassName.equals("java.lang.Byte") || eachItemClassName.equals("java.lang.Long")
-                        || eachItemClassName.equals("java.lang.Float") || eachItemClassName.equals("java.lang.Double")
-                        || eachItemClassName.equals("java.lang.Short"))
-                {
-                      DynaTreeNode childNode = new DynaTreeNode();
-                      childNode.setTitle("["+index+"] = "+eachItem);
-                      childNodeList.add(childNode);
-                      index++;
-                }
-            }
             retNode.setIsFolder(true);
+
             retNode.setChildren(childNodeList);
+            eachField.setAccessible(false);
+
         }
-        eachField.setAccessible(false);
+
         return retNode;
     }
 
-    public static DynaTreeNode parseOOBObjectMap(Object object, Field eachField)  throws Exception
+    public DynaTreeNode parseOOBObjectCollection(Object object, Field eachField)  throws Exception
     {
-        eachField.setAccessible(true);
-        DynaTreeNode retNode = new DynaTreeNode();
-        retNode.setTitle(eachField.getName());
-
-        List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
-
-        if(Map.class.isAssignableFrom(eachField.getType()))
+        DynaTreeNode retNode = null;
+        if(eachField != null)
         {
-            Map<?,?> map = (Map<?,?>)eachField.get(object);
+            eachField.setAccessible(true);
+            retNode = new DynaTreeNode();
+            retNode.setTitle(eachField.getName()+"("+eachField.getGenericType()+")");
 
-            Iterator<?> keyItr = map.keySet().iterator();
-            childNodeList = new ArrayList<DynaTreeNode>();
+            List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
 
-            while (keyItr.hasNext())
+            if(Collection.class.isAssignableFrom(eachField.getType()))
             {
-                Object eachKey = keyItr.next();
-                String eachKeyClassName = eachKey.getClass().getName();
-
-                if(eachKeyClassName.equals("java.lang.String") || eachKeyClassName.equals("java.lang.Character")
-                        || eachKeyClassName.equals("java.lang.Integer") || eachKeyClassName.equals("java.lang.Boolean")
-                        || eachKeyClassName.equals("java.lang.Byte") || eachKeyClassName.equals("java.lang.Long")
-                        || eachKeyClassName.equals("java.lang.Float") || eachKeyClassName.equals("java.lang.Double")
-                        || eachKeyClassName.equals("java.lang.Short"))
+                Collection<?> coll = (Collection<?>)eachField.get(object);
+                if(coll != null)
                 {
-                    Object eachVal = map.get(eachKey);
-                    String eachValClassName = eachVal.getClass().getName();
-
-                    if(eachValClassName.equals("java.lang.String") || eachValClassName.equals("java.lang.Character")
-                            || eachValClassName.equals("java.lang.Integer") || eachValClassName.equals("java.lang.Boolean")
-                            || eachValClassName.equals("java.lang.Byte") || eachValClassName.equals("java.lang.Long")
-                            || eachValClassName.equals("java.lang.Float") || eachValClassName.equals("java.lang.Double")
-                            || eachValClassName.equals("java.lang.Short"))
+                    Iterator<?> collItr = coll.iterator();
+                    int index = 0;
+                    while (collItr.hasNext())
                     {
-                        DynaTreeNode childNode = new DynaTreeNode();
-                        childNode.setTitle(eachKey+" = "+eachVal);
-                        childNodeList.add(childNode) ;
+                        Object eachItem = collItr.next();
+                        String eachItemClassName = eachItem.getClass().getName();
 
+                        if(eachItemClassName.startsWith("java"))
+                        {
+                            DynaTreeNode childNode = new DynaTreeNode();
+                            childNode.setTitle("["+index+"] = "+eachItem+"");
+                            childNodeList.add(childNode);
+                            index++;
+                        }
                     }
-
-
+                    retNode.setIsFolder(true);
+                    retNode.setChildren(childNodeList);
                 }
+
             }
-            retNode.setIsFolder(true);
-            retNode.setChildren(childNodeList);
+            eachField.setAccessible(false);
         }
-        eachField.setAccessible(false);
+
         return retNode;
     }
 
-    public static List<DynaTreeNode> parseCustomObject(Object msg)  throws Exception
+    public DynaTreeNode parseOOBObjectMap(Object object, Field eachField)  throws Exception
+    {
+        DynaTreeNode retNode = null;
+        if(eachField != null)
+        {
+            eachField.setAccessible(true);
+            retNode = new DynaTreeNode();
+            retNode.setTitle(eachField.getName());
+
+            List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
+
+            if(Map.class.isAssignableFrom(eachField.getType()))
+            {
+                Map<?,?> map = (Map<?,?>)eachField.get(object);
+
+                if(map != null)
+                {
+                    Iterator<?> keyItr = map.keySet().iterator();
+                    childNodeList = new ArrayList<DynaTreeNode>();
+
+                    while (keyItr.hasNext())
+                    {
+                        Object eachKey = keyItr.next();
+                        String eachKeyClassName = eachKey.getClass().getName();
+
+                        if(eachKeyClassName.startsWith("java"))
+                        {
+                            Object eachVal = map.get(eachKey);
+                            String eachValClassName = eachVal.getClass().getName();
+
+                            if(eachValClassName.startsWith("java"))
+                            {
+                                DynaTreeNode childNode = new DynaTreeNode();
+                                childNode.setTitle(eachKey+" = "+eachVal+"");
+                                childNodeList.add(childNode) ;
+
+                            }
+
+                        }
+                    }
+                    retNode.setIsFolder(true);
+                    retNode.setChildren(childNodeList);
+                }
+            }
+            eachField.setAccessible(false);
+        }
+        return retNode;
+    }
+
+    public List<DynaTreeNode> parseCustomObject(Object msg)  throws Exception
     {
          List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
 
         if(msg != null)
         {
             String objMsgClass =  msg.getClass().getName();
+            AppLogger.info("parseCustomObject: objMsgClass = "+objMsgClass +", customObjectTopLevelPkg = "+customObjectTopLevelPkg);
+            if(objMsgClass.startsWith(customObjectTopLevelPkg))
+            {
+                /* Need to check if Object has a customized super class. Private fields of super class also needs to be obtained.
+                ie , if child class can access (get and set)  the super class private fields, then those fields also needs to be got.
+                */
+                Class superClass = msg.getClass().getSuperclass();
+                if(superClass.getName().startsWith(customObjectTopLevelPkg))
+                {
+                    Field[] superFieldAry = msg.getClass().getSuperclass().getDeclaredFields();
+                    retList = parseCustomObject2(superFieldAry, msg) ;
+                }
 
-            Field[] fieldAry = msg.getClass().getDeclaredFields();
+                Field[] fieldAry = msg.getClass().getDeclaredFields();
+                List<DynaTreeNode> retList1 = parseCustomObject2(fieldAry, msg) ;
+
+                retList.addAll(retList1);
+            }
+
+        }
+
+      return retList;
+
+    }
+
+    private List<DynaTreeNode> parseCustomObject2(Field[] fieldAry, Object msg) throws Exception
+    {
+           List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
+
             for (Field eachField : fieldAry)
             {
                 eachField.setAccessible(true);
                 int modifier = eachField.getModifiers();
-                /*if(modifier == 26) //public static final int
+                if(modifier > 8) //public static final int
                 {
                     continue;
-                }*/
-                String  eachFieldClassName =  eachField.getType().getName();
-
-                if(MsgParsingUtil.isPrimitive(eachFieldClassName))
-                {
-                    retList.add(MsgParsingUtil.parsePrimitiveField(msg, eachField));
                 }
+                String  eachFieldClassName =  eachField.getGenericType().toString();
+                AppLogger.info("parseCustomObject: eachField name = "+eachField.getName()+" mod = "+modifier+", eachFieldClassName = "+eachFieldClassName);
 
-                else if(MsgParsingUtil.isPrimitiveArray(eachFieldClassName))
+                if(isPrimitive(eachFieldClassName))
                 {
-                    retList.add(MsgParsingUtil.parsePrimitiveArrays(msg, eachField));
+                    retList.add(parsePrimitiveField(msg, eachField));
                 }
-
-                else if(MsgParsingUtil.isObject(eachFieldClassName))
+                else if(isPrimitiveArray(eachFieldClassName))
                 {
-                    if(MsgParsingUtil.isOOBObject(eachFieldClassName))
+                    retList.add(parsePrimitiveArrays(msg, eachField));
+                }
+                else if(isObject(eachFieldClassName))
+                {
+                    if(isOOBObject(eachField.getType()))
                     {
-                        retList.add(MsgParsingUtil.parseOOBObject(msg, eachField));
+                        retList.add(parseOOBObject(msg, eachField));
                     }
-                    else if(MsgParsingUtil.isCollection(eachField.getType()))
+                    else if(isCollection(eachField.getType()))
                     {
-                        if(MsgParsingUtil.isOOBObjectCollection(msg, eachField))
-                        {
-                            retList.add(MsgParsingUtil.parseOOBObjectCollection(msg, eachField));
-                        }
-                        else
-                        {
-                            List<DynaTreeNode> retList1 = parseCustomObjectCollection((Collection<?> )eachField.get(msg)) ;
-                            DynaTreeNode collectionHolderNode = new DynaTreeNode();
-                            collectionHolderNode.setTitle(eachField.getName());
-                            collectionHolderNode.setIsFolder(true);
-                            collectionHolderNode.setChildren(retList1);
-
+                            DynaTreeNode collectionHolderNode = parseCollection((Collection<?>) eachField.get(msg), eachField) ;
                             retList.add(collectionHolderNode);
-                        }
                     }
-                    else if(MsgParsingUtil.isMap(eachField.getType()))
+                    else if(isMap(eachField.getType()))
                     {
-                        if(MsgParsingUtil.isOOBObjectMap(msg, eachField))
-                        {
-                            retList.add(MsgParsingUtil.parseOOBObjectMap(msg, eachField));
-                        }
-                        else
-                        {
-                            List<DynaTreeNode> retList1 = parseCustomObjectMap((Map<?,?> )eachField.get(msg)) ;
-                            DynaTreeNode mapHolderNode = new DynaTreeNode();
-                            mapHolderNode.setTitle(eachField.getName());
-                            mapHolderNode.setIsFolder(true);
-                            mapHolderNode.setChildren(retList1);
-
+                            DynaTreeNode mapHolderNode = parseMap((Map<?, ?>) eachField.get(msg), eachField) ;
                             retList.add(mapHolderNode);
-                        }
-
-
                     }
                     else
                     {
@@ -746,48 +698,43 @@ public class MsgParsingUtil {
                         objHolderNode.setTitle(eachField.getName());
                         objHolderNode.setIsFolder(true);
                         objHolderNode.setChildren(retList1);
-
                         retList.add(objHolderNode);
 
                     }
 
-                } //end - object check
-                else if(MsgParsingUtil.isObjectArray(eachFieldClassName))
+            } //end - object check
+            else if(isObjectArray(eachFieldClassName))
+            {
+                if(isOOBObjectArray(eachFieldClassName))
                 {
-                    if(MsgParsingUtil.isOOBObjectArray(eachFieldClassName))
-                    {
-                        retList.add(MsgParsingUtil.parseOOBObjectArrays(msg, eachField));
-                    }
-                    else
-                    {
-                        List<DynaTreeNode> retList1 = parseCustomObjectArray((Object[] )eachField.get(msg)) ;
-                        DynaTreeNode arrayHolderNode = new DynaTreeNode();
-                        arrayHolderNode.setTitle(eachField.getName());
-                        arrayHolderNode.setIsFolder(true);
-                        arrayHolderNode.setChildren(retList1);
+                    retList.add(parseOOBObjectArrays(msg, eachField));
+                }
+                else
+                {
+                    List<DynaTreeNode> retList1 = parseCustomObjectArray((Object[] )eachField.get(msg)) ;
+                    DynaTreeNode arrayHolderNode = new DynaTreeNode();
+                    arrayHolderNode.setTitle(eachField.getName());
+                    arrayHolderNode.setIsFolder(true);
+                    arrayHolderNode.setChildren(retList1);
 
-                        retList.add(arrayHolderNode);
-                    }
-
+                    retList.add(arrayHolderNode);
                 }
 
-
-                eachField.setAccessible(false);
             }
+            eachField.setAccessible(false);
         }
 
-
-
-      return retList;
-
+         return retList;
     }
 
-    public static List<DynaTreeNode> parseCustomObjectArray(Object[] objAry)  throws Exception
+    public List<DynaTreeNode> parseCustomObjectArray(Object[] objAry)  throws Exception
     {
         List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
 
-        for (int i = 0 ; i < objAry.length ; i++)
+        if(objAry != null)
         {
+            for (int i = 0 ; i < objAry.length ; i++)
+            {
                 DynaTreeNode arrayNode = new DynaTreeNode();
                 arrayNode.setTitle("["+i+"]");
 
@@ -802,31 +749,64 @@ public class MsgParsingUtil {
 
                 }
 
+            }
 
         }
 
         return retList;
     }
 
-    public static List<DynaTreeNode> parseCustomObjectCollection(Collection<?> objColl)  throws Exception
+    @Override
+    public int hashCode() {
+        return super.hashCode();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    public MsgParsingUtil() {
+        super();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    public List<DynaTreeNode> parseInnerCollection(Collection<?> objColl) throws Exception
     {
         List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
-
-        Iterator<?> collItr = objColl.iterator();
-        int index = 0;
-        while(collItr.hasNext())
+        if(objColl != null)
         {
-            DynaTreeNode collNode = new DynaTreeNode();
-            collNode.setTitle("["+index+"]");
-            index++;
-            Object collItem = collItr.next();
-            if(collItem != null)
+            int collIdx = 0;
+            Iterator<?> collItr = objColl.iterator();
+            while(collItr.hasNext())
             {
-                List<DynaTreeNode> retList1 = parseCustomObject(collItem) ;
+                DynaTreeNode collNode = new DynaTreeNode();
+                collNode.setTitle("["+collIdx+"]");
                 collNode.setIsFolder(true);
-                collNode.setChildren(retList1);
+                collIdx++;
 
+                List<DynaTreeNode> eachCollNodeDetails = new ArrayList<DynaTreeNode>();
+                Object collItem = collItr.next();
+                if(collItem != null)
+                {
+                    if(isOOBObject(collItem.getClass()))
+                    {
+                        DynaTreeNode retNode1 = parseOOBObject(collItem, null);
+                        eachCollNodeDetails.add(retNode1);
+                    }
+                    else if(isCollection(collItem.getClass()))
+                    {
+                        List<DynaTreeNode> retNode1 = parseInnerCollection((Collection)collItem);
+                        eachCollNodeDetails.addAll(retNode1);
+                    }
+                    else if(isMap(collItem.getClass()))
+                    {
+                        List<DynaTreeNode> retNode1 = parseInnerMap((Map) collItem);
+                        eachCollNodeDetails.addAll(retNode1);
+                    }
+                    else
+                    {
+                        List<DynaTreeNode> retList1 = parseCustomObject(collItem) ;
+                        eachCollNodeDetails.addAll(retList1);
+                    }
+                }
+                collNode.setChildren(eachCollNodeDetails);
                 retList.add(collNode);
+
             }
 
         }
@@ -834,35 +814,214 @@ public class MsgParsingUtil {
         return retList;
     }
 
-    public static List<DynaTreeNode> parseCustomObjectMap(Map objMap)  throws Exception
+    public DynaTreeNode parseCollection(Collection<?> objColl, Field collectionField)  throws Exception
+    {
+        String collItemCN = null;
+
+        DynaTreeNode retNode = new DynaTreeNode();
+        retNode.setIsFolder(true);
+
+        if(objColl != null)
+        {
+            List<DynaTreeNode> collNodeList = new ArrayList<DynaTreeNode>();
+            Iterator<?> collItr = objColl.iterator();
+            int index = 0;
+            while(collItr.hasNext())
+            {
+                DynaTreeNode collNode = new DynaTreeNode();
+                collNode.setTitle("["+index+"]");
+                collNode.setIsFolder(true);
+
+
+                List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
+
+                index++;
+                Object collItem = collItr.next();
+                if(collItem != null)
+                {
+                    if(collItemCN == null)
+                    {
+                        collItemCN = collItem.getClass().getName();
+                    }
+                    if(isOOBObject(collItem.getClass()))
+                    {
+                        DynaTreeNode retNode1 = parseOOBObject(collItem, null);
+                        retList.add(retNode1);
+                    }
+                    else if(isCollection(collItem.getClass()))
+                    {
+                           List<DynaTreeNode> retNode1 = parseInnerCollection((Collection)collItem);
+                           retList.addAll(retNode1);
+                    }
+                    else if(isMap(collItem.getClass()))
+                    {
+                        List<DynaTreeNode> retNode1 = parseInnerMap((Map) collItem);
+                        retList.addAll(retNode1);
+                    }
+                    else
+                    {
+                        List<DynaTreeNode> retList1 = parseCustomObject(collItem) ;
+                        /*DynaTreeNode retNode1 = new DynaTreeNode();
+                        retNode1.setTitle(collItem.getClass().getName());
+                        retNode1.setChildren(retList1);*/
+                        retList.addAll(retList1);
+                    }
+
+                }
+
+                collNode.setChildren(retList);
+                collNodeList.add(collNode);
+
+            }
+            if(collectionField != null)
+            {
+                retNode.setTitle(collectionField.getName()+"("+objColl.getClass().getName()+"["+collItemCN+"])");
+            }
+            else
+            {
+                retNode.setTitle("("+collItemCN+")");
+            }
+            retNode.setChildren(collNodeList);
+
+        }
+        if(retNode == null)
+        {
+
+            retNode = new DynaTreeNode();
+            retNode.setTitle(collectionField.getName()+"("+collectionField.getType().getName()+")");
+
+        }
+        return retNode;
+    }
+
+    public List<DynaTreeNode> parseInnerMap(Map objMap) throws Exception
     {
         List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
-
-        Iterator<?> mapItr = objMap.keySet().iterator();
-
-        while(mapItr.hasNext())
+        if(objMap != null)
         {
-            String mapKey = (String)mapItr.next();
-            DynaTreeNode mapNode = new DynaTreeNode();
-            mapNode.setTitle(mapKey);
+            Iterator<?> mapItr = objMap.keySet().iterator();
 
-            Object mapVal = objMap.get(mapKey);
-
-            if(mapVal != null)
+            while(mapItr.hasNext())
             {
-                List<DynaTreeNode> retList1 = parseCustomObject(mapVal) ;
-                mapNode.setIsFolder(true);
-                mapNode.setChildren(retList1);
+                List<DynaTreeNode> eachMapDetails = new ArrayList<DynaTreeNode>();
+                Object mapKey1 = mapItr.next();
+                if(isOOBObject(mapKey1.getClass()))
+                {
+                    String mapKey = (String)(mapKey1 + "");
+                    DynaTreeNode mapNode = new DynaTreeNode();
+                    mapNode.setTitle(mapKey);
+                    mapNode.setIsFolder(true);
 
-                retList.add(mapNode);
+                    Object mapVal = objMap.get(mapKey);
+
+                    if(mapVal != null)
+                    {
+                        if(isOOBObject(mapVal.getClass()))
+                        {
+                            DynaTreeNode retNode = parseOOBObject(mapVal, null) ;
+                            eachMapDetails.add(retNode);
+                        }
+                        else if(isCollection(mapVal.getClass()))
+                        {
+                            List<DynaTreeNode> retNode =  parseInnerCollection((Collection) mapVal);
+                            eachMapDetails.addAll(retNode);
+                        }
+                        else if(isMap(mapVal.getClass()))
+                        {
+                            List<DynaTreeNode> retNode =  parseInnerMap((Map)mapVal);
+                            eachMapDetails.addAll(retNode);
+                        }
+                        else
+                        {
+                            List<DynaTreeNode> retList1 = parseCustomObject(mapVal) ;
+                            eachMapDetails.addAll(retList1);
+                        }
+
+
+                    }
+
+                    mapNode.setChildren(eachMapDetails);
+                    retList.add(mapNode);
+
+                }
 
             }
-
         }
-
         return retList;
     }
 
+    public DynaTreeNode parseMap(Map objMap, Field eachField)  throws Exception
+    {
+        String mapCN = null;
+        DynaTreeNode mapHolderNode = null;
 
+        if(objMap != null)
+        {
+            mapHolderNode = new DynaTreeNode();
+            List<DynaTreeNode> mapNodeList = new ArrayList<DynaTreeNode>();
 
+            Iterator<?> mapItr = objMap.keySet().iterator();
+
+            while(mapItr.hasNext())
+            {
+                List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
+
+                Object mapKey1 = mapItr.next();
+                if(isOOBObject(mapKey1.getClass()))
+                {
+                    String mapKey = (String)(mapKey1 + "");
+                    DynaTreeNode mapNode = new DynaTreeNode();
+                    mapNode.setTitle(mapKey);
+                    mapNode.setIsFolder(true);
+
+                    Object mapVal = objMap.get(mapKey);
+
+                    if(mapVal != null)
+                    {
+                        if(mapCN == null)
+                        {
+                            mapCN = mapKey1.getClass().getName() +", "+ mapVal.getClass().getName();
+                        }
+
+                        if(isOOBObject(mapVal.getClass()))
+                        {
+                             DynaTreeNode retNode = parseOOBObject(mapVal, null) ;
+                             retList.add(retNode);
+                        }
+                        else if(isCollection(mapVal.getClass()))
+                        {
+                            List<DynaTreeNode> retNode =  parseInnerCollection((Collection) mapVal);
+                            retList.addAll(retNode);
+                        }
+                        else if(isMap(mapVal.getClass()))
+                        {
+                            List<DynaTreeNode> retNode =  parseInnerMap((Map) mapVal);
+                            retList.addAll(retNode);
+                        }
+                        else
+                        {
+                            List<DynaTreeNode> retList1 = parseCustomObject(mapVal) ;
+                            retList.addAll(retList1);
+                        }
+
+                    }
+                    mapNode.setChildren(retList);
+                    mapNodeList.add(mapNode);
+
+                }
+
+            }
+            mapHolderNode.setTitle(eachField.getName()+"("+objMap.getClass().getName()+"["+mapCN+"])");
+            mapHolderNode.setIsFolder(true);
+            mapHolderNode.setChildren(mapNodeList);
+
+        }
+        if(mapHolderNode == null)
+        {
+            mapHolderNode = new DynaTreeNode();
+            mapHolderNode.setTitle(eachField.getName()+"("+eachField.getType().getName()+")");
+
+        }
+        return mapHolderNode;
+    }
 }

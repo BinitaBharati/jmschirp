@@ -10,8 +10,8 @@ import bbharati.jmschirp.util.AppLogger
  *
  */
 
-QueueBrowser qBrowser = new QueueBrowser()
+/*QueueBrowser qBrowser = new QueueBrowser()
 AppLogger.info('started at '+System.currentTimeMillis())
 qBrowser.init('Tibco1', 'jmschirpObjMsgQ1')
 qBrowser.browseQueue()
-AppLogger.info('ended at '+System.currentTimeMillis())
+AppLogger.info('ended at '+System.currentTimeMillis())    */
