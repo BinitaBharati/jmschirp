@@ -6,6 +6,7 @@ import bbharati.jmschirp.util.AppLogger
 import bbharati.jmschirp.util.ConnectionUtil
 import bbharati.jmschirp.util.MsgParsingUtil
 import bbharati.jmschirp.util.PackageNamingUtil
+import bbharati.jmschirp.util.QueueSearcherUtil
 import groovy.json.JsonBuilder
 
 import javax.jms.*
@@ -17,20 +18,22 @@ import javax.naming.InitialContext
  * User: binita.bharati@gmail.com
  * Date: 23/05/13
  * Time: 12:21 PM
+ *
+ *
+ * Author: binita.bharati@gmail.com
+ * This class contains the utility methods that returns ObjectMessage meta-data info
+ * to the browser. This meta-data will be displayed in the Queue - Search dialog.
+
  **/
-class MsgBrowser {
+class QueueSearcher {
 
     def jmsProviderDetails
     def queueName
-    def jmsMsgId
-    def usrSession
 
-    def init(def jmsConnectionName, def queueName1, def jmsMsgId1, def usrSession1)
+    def init(def jmsConnectionName, def queueName1)
     {
         jmsProviderDetails = ConnectionUtil.getJmsProviderInfo(jmsConnectionName)
         queueName = queueName1
-        usrSession = usrSession1
-        jmsMsgId = jmsMsgId1
 
     }
 
@@ -65,16 +68,10 @@ class MsgBrowser {
         javax.jms.QueueBrowser queueBrowser = session.createBrowser(queue);
 
         queueDataEnum = queueBrowser.getEnumeration();
-        AppLogger.info('inspectMsg: jmsMsgId = '+jmsMsgId)
         while (queueDataEnum.hasMoreElements())
         {
             Object msg = queueDataEnum.nextElement()
 
-            def qMsgId =  msg.getJMSMessageID()
-            AppLogger.info('inspectMsg: qMsgId = '+qMsgId)
-            if (qMsgId == jmsMsgId)
-            {
-                AppLogger.info('inspectMsg: yeaa :) found the qMsgId = '+qMsgId)
 
                 if (msg instanceof ObjectMessage)
                 {
@@ -82,20 +79,20 @@ class MsgBrowser {
                     ObjectMessage objMsg = (ObjectMessage)msg;
                     Object obj1 = objMsg.getObject()
 
-                    MsgParsingUtil msgParsingUtil = new MsgParsingUtil()
-                    msgParsingUtil.setCustomObjectTopLevelPkg(PackageNamingUtil.getTopLevelPackages(obj1.getClass().getName()))
+                    QueueSearcherUtil qParsingUtil = new QueueSearcherUtil()
+                    qParsingUtil.setCustomObjectTopLevelPkg(PackageNamingUtil.getTopLevelPackages(obj1.getClass().getName()))
 
-                    def dynaTreeList = msgParsingUtil.mainParseObject(obj1)
+                    def retList = qParsingUtil.parseCustomObject(obj1)
 
                     //def dynaTreeJsonStr = new JsonBuilder(dynaTreeList).toPrettyString();
-                    AppLogger.info('inspectMsg: exiting with dynaTreeList = '+dynaTreeList)
+                    AppLogger.info('inspectMsg: exiting with dynaTreeList = '+retList)
 
                     connection.close();
                     session.close();
                     queueBrowser.close();
 
-                    retMap['responseType']  = 'tree'
-                    retMap['value']  = dynaTreeList
+                    retMap['msgType']  = 'ObjectMessage'
+                    retMap['model']  = retList
 
                     return (new JsonBuilder(retMap).toPrettyString())
 
@@ -107,7 +104,7 @@ class MsgBrowser {
                     retMap['responseType']  = 'plain'
                     retMap['value']  = txtMsg.getText()
 
-                     return (new JsonBuilder(retMap).toPrettyString())
+                    return (new JsonBuilder(retMap).toPrettyString())
                 }
                 else  if (msg instanceof  StreamMessage)
                 {
@@ -165,11 +162,8 @@ class MsgBrowser {
                 }
 
                 break
-            }
 
         }
-
-        //AppLogger.info('inspectMsg: exiting with retMap = '+retMap)
         return retMap
 
     }

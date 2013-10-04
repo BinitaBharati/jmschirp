@@ -2,17 +2,14 @@ var HANDLEBAR_TEMPLATES;
 
 $(function() {
 
-  console.log('queueDetails js ');
+        console.log('queueDetails js ');
 
-
-       HANDLEBAR_TEMPLATES = {
-        // msgDetailsDivTmpl :   Handlebars.compile($("#msgDetailsDiv-template").html()) ,
+         HANDLEBAR_TEMPLATES = {
+         //msgDetailsDivTmpl :   Handlebars.compile($("#msgDetailsDiv-template").html()) ,
          msgDetailsDivTmpl1 :   Handlebars.compile($("#msgDetailsDiv-template1").html()) ,
          progressBarTemplate :   Handlebars.compile($("#progressBarTemplate").html()) 
 
-
      };
-
 
     
   });

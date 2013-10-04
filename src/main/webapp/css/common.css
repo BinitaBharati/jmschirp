@@ -6,3 +6,10 @@ input[disabled], select[disabled], textarea[disabled], input[readonly], select[r
     background-color: #EEEEEE;
     cursor: not-allowed;
 }
+
+.displayShadowedText
+{
+  font-size: 16px;
+  color: #C0C0C0;
+  text-shadow: -1px -1px 1px #000;
+}

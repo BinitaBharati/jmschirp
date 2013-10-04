@@ -70,13 +70,22 @@
     <script src="../externalLibs/jquery/jquery.cookie.js" type="text/javascript"></script>
 
 
-     <script src="../externalLibs/handlebar/handlebar.js"></script>
+    <script src="../externalLibs/handlebar/handlebar.js"></script>
 
-     <script src="../js/common.js"></script>
+     <script src="../externalLibs/footable/js/footable.js" type="text/javascript"></script>
+    <!-- <script src="../externalLibs/footable/js/footable.paginate.js" type="text/javascript"></script> -->
+    <script src="../externalLibs/footable/js/footable.filter.js" type="text/javascript"></script> 
+
+    <script src="../js/common.js"></script>
+     <script src="../js/tabFunctions.js"></script> 
      <script src="../js/connectionDetails.js"></script>
+     
      <script type="text/javascript">
       var globalQueueData = {};
       var globalTabsData = {};
+
+      var TAB_GLOBAL_PARAMS = {tabTemplate : "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>",tabCounter : 2};
+
     </script>
 
   </head>

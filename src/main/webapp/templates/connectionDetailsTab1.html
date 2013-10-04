@@ -15,8 +15,8 @@
   <!-- <link href="../externalLibs/footable/css/footable.sortable-0.1.css" rel="stylesheet" type="text/css" /> -->
   <!-- <link href="../externalLibs/footable/css/footable.paginate.css" rel="stylesheet" type="text/css" /> -->
 
-   <link href="../css/common.css" rel="stylesheet">
-  
+  <link href="../css/common.css" rel="stylesheet">  
+   <link href="../css/connectionDetailsTab1.css" rel="stylesheet"> 
 	</head>
 	<body>
     
@@ -27,20 +27,19 @@
           <span>Search</span>
           <input id="filter" type="text" />  
           <a href="#clear" class="clear-filter" title="clear filter"><img src="../images/edit_clear.png" title="Clear filter"></a>
-        </div>
-        
+        </div>        
       </div>
       
-     <table class="footable" data-page-navigation="#pagination" data-page-size="10" data-filter="#filter"> 
+     <table id="queueListingTable" class="footable" data-page-navigation="#pagination" data-page-size="10" data-filter="#filter"> 
         <!-- <table class="footable"> -->
       <thead>
         <tr>
           <th data-class="expand">
             <span>Queue</span>
           </th>
-          <!-- <th>
+          <th>
             <span>Action</span>
-          </th> -->
+          </th>
           <th data-hide="phone,tablet">
             Msg Count
           </th>
@@ -68,12 +67,13 @@
       {
         %>
         <tr>
-          <td><%= jmsQueueList[i].name%></td>
+          <td id="jmsQ-<%= i %>"><%= jmsQueueList[i].name%></td>
           <!-- <td>
-            <a href="../templates/queueDetails.html?connection=<%= jmsConnectionName %>&queue=<%= jmsQueueList[i].name %>">
+            <a href="../templates/queueDetails.html?connection=<%= jmsConnectionName %>&queue.search=<%= jmsQueueList[i].name %>">
               Browse
             </a>
           </td> -->
+          <td> <button id="searchQ-<%= i %>" class="btn btn-primary btn-small dropdown-toggle searchQ" data-toggle="dropdown">Search</button> </td>
           <td><%= jmsQueueList[i].pendingMessageCount%></td>
           <td><%= jmsQueueList[i].pendingMessageSize%> bytes</td>
         </tr>
@@ -86,11 +86,9 @@
   </div>
    
 		
-	<script src="../externalLibs/jquery/jquery.js" type="text/javascript"></script>
-    <script src="../externalLibs/jqueryui/jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
-    <script src="../externalLibs/jquery/jquery.cookie.js" type="text/javascript"></script>
-
-     <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-transition.js"></script>
+    <script src="../externalLibs/jquery/jquery.js" type="text/javascript"></script>
+  
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-transition.js"></script>
     <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-alert.js"></script>
     <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-modal.js"></script>
     <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-dropdown.js"></script>
@@ -101,19 +99,106 @@
     <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-button.js"></script>
     <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-collapse.js"></script>
     <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-carousel.js"></script>
-    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-typeahead.js"></script> 
+    <script src="../externalLibs/bootstrap/docs/assets/js/bootstrap-typeahead.js"></script>
 
+      <!-- The order of inclusion of jquery-ui js shoukd be after bootstrap js. Else, jquery=ui js work will get undone.
+    E.g side effect - jquery-ui modal dialog cancel icon wasnt visible, under the condition when jquery-ui js was getting 
+    applied before bootstrap js -->
+
+    <script src="../externalLibs/jqueryui/jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
+    <script src="../externalLibs/jquery/jquery.cookie.js" type="text/javascript"></script>
+ 
+
+
+   
     <!-- <script src="../js/connectionTab.js"></script> -->
 
     <script src="../js/common.js"></script>
+    <!-- <script src="../js/tabFunctions.js"></script> -->
 
     <script src="../externalLibs/footable/js/footable.js" type="text/javascript"></script>
     <!-- <script src="../externalLibs/footable/js/footable.paginate.js" type="text/javascript"></script> -->
     <script src="../externalLibs/footable/js/footable.filter.js" type="text/javascript"></script> 
-
+    
     <script src="../js/connectionDetailsTab1.js"></script>
 
-    
+     <script type="text/javascript">
+      \$(".searchQ").click(function(){
+          var id = this.id.substring(this.id.indexOf('-')+1);
+          var qName = \$("#jmsQ-"+id).html();
+
+           searchQAction('<%=jmsConnectionName%>', qName);
+
+
+      
+           });
+      </script>      
+      <!-- jquery UI modal dialog - start -->
+
+      <!-- Handlebar js for client side templating - start -->
+        <script id="searchQObjMsgCN-template" type="x-handlebars-template">
+          <div id="className-{{index}}" class="searchQCNDetailsDiv">
+              <div id="searchQCNDetailsInnerDiv-{{index}}" class="searchQCNDetailsInnerDiv-{{index}}">
+            </div>
+          </div>
+        </script>
+
+         <script id="eachSearchCriteria-template" type="x-handlebars-template">
+           <div id="searchCriteria-{{index}}" class="row-fluid">
+            <div class="span4">
+              <label for="eachSearchCriteria-{{index}}">{{eachFieldName}}</label>
+            </div>
+            <div class="span3 offset1">
+              <!-- Store className associated to a fieldName using HTML5 data attribute.
+              http://stackoverflow.com/questions/2412947/do-html5-custom-data-attributes-work-in-ie-6
+              -->             
+                  <input id="eachSearchCriteria-{{index}}" class="searchCriteriaInput" title="{{eachFieldName}}" data-objModelCN="{{eachFieldClassName}}">            <span id="deleteSearchCriteriaImg-{{index}}" class="deleteSearchCriteriaImg"></span>
+          </div>
+          </div>
+        </script>
+
+
+       
+      <!-- Handlebar js for client side templating - end -->
+
+
+        <!-- jquery UI modal dialog - start -->
+      <!-- modal dialog to search ObjectMessage queue -->
+  <div class="container-fluid">
+  <div id="searchQDialog" class="dialogForm" title="Search queue" style="display:none">
+    <form>
+      <p class="searchQDialogMsgType">ObjectMessage</p>
+       <fieldset id="searchQFieldSet">
+         <div class="row-fluid">
+           <div class="span3">
+              <label for="objModelClassListing">Select class &nbsp<span class="mandatoryIcon"></span></label>
+             <select id="objModelClassListing" class="objModelClassListing" title="Object model class.Select from drop-down"> 
+             </select>
+           </div>
+             <div class="span6 offset3">
+                <label for="classFieldListing">Select class fields &nbsp<span class="mandatoryIcon"></span></label>
+                <select id="classFieldListing" class="classFieldListing" title="Object model class.Select from drop-down"> 
+                </select>
+            </div>
+          </div>
+          <div class="row-fluid">
+            <div class="span1">
+              <!-- jquery-ui modal dialog isnt compatible with button element. ie, a button html element cant be part of form fields.
+              If you want to accomodate button, use the input type='button' style instead. -->
+               <input id="addSearchCriteria" class="addSearchCriteria btn-primary btn-small btn" type="button" value="Add search criteria"></input>
+             </div>
+           </div>
+           <hr/>
+           <!-- Add dynamic content here. jquery click events will not work if directly called on dynamic elements.
+           Need a static container for event handling on dynamic elements. -->
+           <div id="searchCriteriaContent">
+           </div>
+       </fieldset>
+    </form>
+  </div>
+  </div>
+ <!-- jquery UI modal dialog - end -->
+
      
     </body>
 </html>

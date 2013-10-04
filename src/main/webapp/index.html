@@ -183,8 +183,8 @@
             <label for="jndiPassword">Password &nbsp</label>
             <input type="password" name="jndiPassword" id="jndiPassword" class="jmxPassword" value="" class="text ui-widget-content ui-corner-all" title="JNDI security credentials"/>
        </div>
-  </div>
-  </div>
+   </div>  
+ </div>
 </div>
 <br/>
   <label for="jmxInfo">JMX</label>
@@ -270,7 +270,10 @@
     <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-collapse.js"></script>
     <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-carousel.js"></script>
     <script src="externalLibs/bootstrap/docs/assets/js/bootstrap-typeahead.js"></script>
-
+    
+    <!-- The order of inclusion of jquery-ui js shoukd be after bootstrap js. Else, jquery=ui js work will get undone.
+    E.g side effect - jquery-ui modal dialog cancel icon wasnt visible, under the condition when jquery-ui js was getting 
+    applied before bootstrap js -->
     <script src="externalLibs/jqueryui/jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
     <script src="externalLibs/jquery/jquery.cookie.js" type="text/javascript"></script>
 

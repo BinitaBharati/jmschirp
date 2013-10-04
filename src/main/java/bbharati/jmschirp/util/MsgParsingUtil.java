@@ -2,6 +2,7 @@ package bbharati.jmschirp.util;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import org.apache.commons.lang.StringUtils;
 
 import bbharati.jmschirp.dynatree.node.model.DynaTreeNode;
 
@@ -169,7 +170,7 @@ public class MsgParsingUtil {
             if(eachFieldClassName.indexOf(".") != -1 && eachFieldClassName.indexOf("[L") != -1)
             {
 
-                if(eachFieldClassName.startsWith("java"))
+                if(eachFieldClassName.indexOf("java") != -1)
                 {
                     return true;
                 }
@@ -228,7 +229,7 @@ public class MsgParsingUtil {
                         }
                     }
                 }
-             }
+            }
         }
 
         return false;
@@ -310,7 +311,7 @@ public class MsgParsingUtil {
         DynaTreeNode dynaTreeNode = null;
         if(eachField != null)
         {
-             dynaTreeNode = new DynaTreeNode();
+            dynaTreeNode = new DynaTreeNode();
 
         /*To work around :  can not access a member of class bbharati.binita.jmschirp.test.TestObjMsg_Java with modifiers "private"
         */
@@ -507,11 +508,16 @@ public class MsgParsingUtil {
         {
             eachField.setAccessible(true);
             retNode = new DynaTreeNode();
-            retNode.setTitle(eachField.getName());
+
+            String title = eachField.getName();
 
             List<DynaTreeNode> childNodeList = new ArrayList<DynaTreeNode>();
 
             Object[] objAry = (Object[])eachField.get(object);
+
+            title = title + "(" + objAry[0].getClass().getName() + ")";
+            retNode.setTitle(title);
+
             for (int i = 0 ; i < objAry.length ; i++)
             {
                 DynaTreeNode childNode = new DynaTreeNode();
@@ -620,9 +626,24 @@ public class MsgParsingUtil {
         return retNode;
     }
 
+    public List<DynaTreeNode> mainParseObject(Object msg) throws Exception
+    {
+
+        List<DynaTreeNode> finalList = new ArrayList<DynaTreeNode>();
+
+        DynaTreeNode topMostNode = new DynaTreeNode();
+        topMostNode.setTitle(msg.getClass().getName());
+        topMostNode.setIsFolder(true);
+        topMostNode.setChildren(parseCustomObject(msg));
+
+        finalList.add(topMostNode);
+
+        return finalList;
+    }
+
     public List<DynaTreeNode> parseCustomObject(Object msg)  throws Exception
     {
-         List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
+        List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
 
         if(msg != null)
         {
@@ -648,59 +669,59 @@ public class MsgParsingUtil {
 
         }
 
-      return retList;
+        return retList;
 
     }
 
     private List<DynaTreeNode> parseCustomObject2(Field[] fieldAry, Object msg) throws Exception
     {
-           List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
+        List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
 
-            for (Field eachField : fieldAry)
+        for (Field eachField : fieldAry)
+        {
+            eachField.setAccessible(true);
+            int modifier = eachField.getModifiers();
+            if(modifier > 8) //public static final int
             {
-                eachField.setAccessible(true);
-                int modifier = eachField.getModifiers();
-                if(modifier > 8) //public static final int
-                {
-                    continue;
-                }
-                String  eachFieldClassName =  eachField.getGenericType().toString();
-                AppLogger.info("parseCustomObject: eachField name = "+eachField.getName()+" mod = "+modifier+", eachFieldClassName = "+eachFieldClassName);
+                continue;
+            }
+            String  eachFieldClassName =  eachField.getGenericType().toString();
+            AppLogger.info("parseCustomObject: eachField name = "+eachField.getName()+" mod = "+modifier+", eachFieldClassName = "+eachFieldClassName);
 
-                if(isPrimitive(eachFieldClassName))
+            if(isPrimitive(eachFieldClassName))
+            {
+                retList.add(parsePrimitiveField(msg, eachField));
+            }
+            else if(isPrimitiveArray(eachFieldClassName))
+            {
+                retList.add(parsePrimitiveArrays(msg, eachField));
+            }
+            else if(isObject(eachFieldClassName))
+            {
+                if(isOOBObject(eachField.getType()))
                 {
-                    retList.add(parsePrimitiveField(msg, eachField));
+                    retList.add(parseOOBObject(msg, eachField));
                 }
-                else if(isPrimitiveArray(eachFieldClassName))
+                else if(isCollection(eachField.getType()))
                 {
-                    retList.add(parsePrimitiveArrays(msg, eachField));
+                    DynaTreeNode collectionHolderNode = parseCollection((Collection<?>) eachField.get(msg), eachField) ;
+                    retList.add(collectionHolderNode);
                 }
-                else if(isObject(eachFieldClassName))
+                else if(isMap(eachField.getType()))
                 {
-                    if(isOOBObject(eachField.getType()))
-                    {
-                        retList.add(parseOOBObject(msg, eachField));
-                    }
-                    else if(isCollection(eachField.getType()))
-                    {
-                            DynaTreeNode collectionHolderNode = parseCollection((Collection<?>) eachField.get(msg), eachField) ;
-                            retList.add(collectionHolderNode);
-                    }
-                    else if(isMap(eachField.getType()))
-                    {
-                            DynaTreeNode mapHolderNode = parseMap((Map<?, ?>) eachField.get(msg), eachField) ;
-                            retList.add(mapHolderNode);
-                    }
-                    else
-                    {
-                        List<DynaTreeNode> retList1 = parseCustomObject(eachField.get(msg)) ;
-                        DynaTreeNode objHolderNode = new DynaTreeNode();
-                        objHolderNode.setTitle(eachField.getName());
-                        objHolderNode.setIsFolder(true);
-                        objHolderNode.setChildren(retList1);
-                        retList.add(objHolderNode);
+                    DynaTreeNode mapHolderNode = parseMap((Map<?, ?>) eachField.get(msg), eachField) ;
+                    retList.add(mapHolderNode);
+                }
+                else
+                {
+                    List<DynaTreeNode> retList1 = parseCustomObject(eachField.get(msg)) ;
+                    DynaTreeNode objHolderNode = new DynaTreeNode();
+                    objHolderNode.setTitle(eachField.getName());
+                    objHolderNode.setIsFolder(true);
+                    objHolderNode.setChildren(retList1);
+                    retList.add(objHolderNode);
 
-                    }
+                }
 
             } //end - object check
             else if(isObjectArray(eachFieldClassName))
@@ -724,7 +745,7 @@ public class MsgParsingUtil {
             eachField.setAccessible(false);
         }
 
-         return retList;
+        return retList;
     }
 
     public List<DynaTreeNode> parseCustomObjectArray(Object[] objAry)  throws Exception
@@ -765,9 +786,29 @@ public class MsgParsingUtil {
         super();    //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    public List<DynaTreeNode> parseInnerCollection(Collection<?> objColl) throws Exception
+    /* Count the number of open brackets and put the same number of closing brackets at the end
+    of the input string
+    * */
+    private String completeClosingBrackets(String input)
     {
+          String retStr = input;
+          int openBracketRepeatCount = StringUtils.countMatches(input , "(");
+
+          for (int i = 0 ; i < openBracketRepeatCount ; i++)
+          {
+                  retStr = retStr + ")";
+          }
+
+        return retStr;
+
+    }
+
+    public LinkedHashMap<String, ?>  parseInnerCollection(Collection<?> objColl, String collectionHolderCN) throws Exception
+    {
+        LinkedHashMap<String, Object> retMap = new LinkedHashMap<String, Object>();
+
         List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
+        String innerCollItemCN =  null;
         if(objColl != null)
         {
             int collIdx = 0;
@@ -787,21 +828,36 @@ public class MsgParsingUtil {
                     {
                         DynaTreeNode retNode1 = parseOOBObject(collItem, null);
                         eachCollNodeDetails.add(retNode1);
+                        if(!retMap.containsKey("innerClass"))
+                        {
+                            innerCollItemCN = completeClosingBrackets(collectionHolderCN + "[" + collItem.getClass().getName() +"]");
+                            retMap.put("innerClass",innerCollItemCN);
+
+                        }
+
                     }
                     else if(isCollection(collItem.getClass()))
                     {
-                        List<DynaTreeNode> retNode1 = parseInnerCollection((Collection)collItem);
+                        String inspectedInnerCN =   collectionHolderCN + "(" + collItem.getClass();
+                        List<DynaTreeNode> retNode1 = (List<DynaTreeNode>)parseInnerCollection((Collection)collItem, inspectedInnerCN).get("retList");
                         eachCollNodeDetails.addAll(retNode1);
                     }
                     else if(isMap(collItem.getClass()))
                     {
-                        List<DynaTreeNode> retNode1 = parseInnerMap((Map) collItem);
+                        String inspectedInnerCN =   collectionHolderCN + "(" + collItem.getClass();
+                        LinkedHashMap<String,?>  retMap1 =  parseInnerMap((Map) collItem, inspectedInnerCN);
+                        List<DynaTreeNode> retNode1 = (List<DynaTreeNode>) retMap1.get("retList") ;
                         eachCollNodeDetails.addAll(retNode1);
                     }
                     else
                     {
                         List<DynaTreeNode> retList1 = parseCustomObject(collItem) ;
                         eachCollNodeDetails.addAll(retList1);
+                        if(!retMap.containsKey("innerClass"))
+                        {
+                            innerCollItemCN = completeClosingBrackets(collectionHolderCN + "[" + collItem.getClass().getName() +"]");
+                            retMap.put("innerClass",innerCollItemCN);
+                        }
                     }
                 }
                 collNode.setChildren(eachCollNodeDetails);
@@ -810,13 +866,15 @@ public class MsgParsingUtil {
             }
 
         }
+        retMap.put("retList", retList);
 
-        return retList;
+        return retMap;
     }
 
     public DynaTreeNode parseCollection(Collection<?> objColl, Field collectionField)  throws Exception
     {
         String collItemCN = null;
+        String innerClass = null;
 
         DynaTreeNode retNode = new DynaTreeNode();
         retNode.setIsFolder(true);
@@ -826,17 +884,18 @@ public class MsgParsingUtil {
             List<DynaTreeNode> collNodeList = new ArrayList<DynaTreeNode>();
             Iterator<?> collItr = objColl.iterator();
             int index = 0;
+
+
             while(collItr.hasNext())
             {
                 DynaTreeNode collNode = new DynaTreeNode();
                 collNode.setTitle("["+index+"]");
                 collNode.setIsFolder(true);
 
-
-                List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
-
                 index++;
                 Object collItem = collItr.next();
+                List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
+
                 if(collItem != null)
                 {
                     if(collItemCN == null)
@@ -850,20 +909,23 @@ public class MsgParsingUtil {
                     }
                     else if(isCollection(collItem.getClass()))
                     {
-                           List<DynaTreeNode> retNode1 = parseInnerCollection((Collection)collItem);
-                           retList.addAll(retNode1);
+                        LinkedHashMap<String,?>  retMap =  parseInnerCollection((Collection)collItem, collItemCN);
+                        List<DynaTreeNode> retNode1 =   (List<DynaTreeNode>)retMap.get("retList");
+                        retList.addAll(retNode1);
+
+                        innerClass = (String)retMap.get("innerClass");
                     }
                     else if(isMap(collItem.getClass()))
                     {
-                        List<DynaTreeNode> retNode1 = parseInnerMap((Map) collItem);
+                        LinkedHashMap<String,?>  retMap =  parseInnerMap((Map) collItem, collItemCN);
+                        List<DynaTreeNode> retNode1 = (List<DynaTreeNode>)retMap.get("retList");
                         retList.addAll(retNode1);
+
+                        innerClass = (String)retMap.get("innerClass");
                     }
                     else
                     {
                         List<DynaTreeNode> retList1 = parseCustomObject(collItem) ;
-                        /*DynaTreeNode retNode1 = new DynaTreeNode();
-                        retNode1.setTitle(collItem.getClass().getName());
-                        retNode1.setChildren(retList1);*/
                         retList.addAll(retList1);
                     }
 
@@ -872,6 +934,10 @@ public class MsgParsingUtil {
                 collNode.setChildren(retList);
                 collNodeList.add(collNode);
 
+            }
+            if(innerClass != null)
+            {
+                collItemCN = innerClass;
             }
             if(collectionField != null)
             {
@@ -884,19 +950,15 @@ public class MsgParsingUtil {
             retNode.setChildren(collNodeList);
 
         }
-        if(retNode == null)
-        {
-
-            retNode = new DynaTreeNode();
-            retNode.setTitle(collectionField.getName()+"("+collectionField.getType().getName()+")");
-
-        }
         return retNode;
     }
 
-    public List<DynaTreeNode> parseInnerMap(Map objMap) throws Exception
+    public LinkedHashMap<String, ?> parseInnerMap(Map objMap, String containerCN) throws Exception
     {
+        LinkedHashMap<String, Object> retMap = new LinkedHashMap<String, Object>();
+
         List<DynaTreeNode> retList = new ArrayList<DynaTreeNode>();
+        String mapCN = null;
         if(objMap != null)
         {
             Iterator<?> mapItr = objMap.keySet().iterator();
@@ -920,21 +982,37 @@ public class MsgParsingUtil {
                         {
                             DynaTreeNode retNode = parseOOBObject(mapVal, null) ;
                             eachMapDetails.add(retNode);
+
+                            if(!retMap.containsKey("innerClass"))
+                            {
+                                mapCN =   containerCN + "[" +  mapKey1.getClass().getName() + "," + mapVal.getClass().getName() + "]";
+                                retMap.put("innerClass", completeClosingBrackets(mapCN));
+
+                            }
                         }
                         else if(isCollection(mapVal.getClass()))
                         {
-                            List<DynaTreeNode> retNode =  parseInnerCollection((Collection) mapVal);
+                            String inspectedInnerCN =   containerCN + "(" + mapVal.getClass();
+                            List<DynaTreeNode> retNode =  (List<DynaTreeNode>)parseInnerCollection((Collection) mapVal, inspectedInnerCN).get("retList");
                             eachMapDetails.addAll(retNode);
                         }
                         else if(isMap(mapVal.getClass()))
                         {
-                            List<DynaTreeNode> retNode =  parseInnerMap((Map)mapVal);
+                            String inspectedInnerCN =   containerCN + "(" + mapVal.getClass();
+                            List<DynaTreeNode> retNode =  (List<DynaTreeNode>)parseInnerMap((Map)mapVal, inspectedInnerCN).get("retList");
                             eachMapDetails.addAll(retNode);
                         }
                         else
                         {
                             List<DynaTreeNode> retList1 = parseCustomObject(mapVal) ;
                             eachMapDetails.addAll(retList1);
+
+                            if(!retMap.containsKey("innerClass"))
+                            {
+                                mapCN =   containerCN + "[" +  mapKey1.getClass().getName() + "," + mapVal.getClass().getName() + "]";
+                                retMap.put("innerClass", completeClosingBrackets(mapCN));
+
+                            }
                         }
 
 
@@ -947,13 +1025,16 @@ public class MsgParsingUtil {
 
             }
         }
-        return retList;
+        retMap.put("retList", retList);
+        return retMap;
     }
 
     public DynaTreeNode parseMap(Map objMap, Field eachField)  throws Exception
     {
         String mapCN = null;
         DynaTreeNode mapHolderNode = null;
+
+        String innerClass = null;
 
         if(objMap != null)
         {
@@ -985,18 +1066,25 @@ public class MsgParsingUtil {
 
                         if(isOOBObject(mapVal.getClass()))
                         {
-                             DynaTreeNode retNode = parseOOBObject(mapVal, null) ;
-                             retList.add(retNode);
+                            DynaTreeNode retNode = parseOOBObject(mapVal, null) ;
+                            retList.add(retNode);
                         }
                         else if(isCollection(mapVal.getClass()))
                         {
-                            List<DynaTreeNode> retNode =  parseInnerCollection((Collection) mapVal);
+                            LinkedHashMap<String, ?> retMap =  parseInnerCollection((Collection) mapVal, mapCN);
+                            List<DynaTreeNode> retNode =  (List<DynaTreeNode>)retMap.get("retList");
                             retList.addAll(retNode);
+
+                            innerClass = (String)retMap.get("innerClass") ;
+
                         }
                         else if(isMap(mapVal.getClass()))
                         {
-                            List<DynaTreeNode> retNode =  parseInnerMap((Map) mapVal);
+                            LinkedHashMap<String, ?> retMap  =  parseInnerMap((Map) mapVal, mapCN);
+                            List<DynaTreeNode> retNode =  (List<DynaTreeNode>)retMap.get("retList");
                             retList.addAll(retNode);
+
+                            innerClass = (String)retMap.get("innerClass") ;
                         }
                         else
                         {
@@ -1010,6 +1098,10 @@ public class MsgParsingUtil {
 
                 }
 
+            }
+            if(innerClass != null)
+            {
+                mapCN = innerClass;
             }
             mapHolderNode.setTitle(eachField.getName()+"("+objMap.getClass().getName()+"["+mapCN+"])");
             mapHolderNode.setIsFolder(true);

@@ -1,5 +1,4 @@
 import bbharati.jmschirp.test.JmsObjectFactory_Java
-import bbharati.jmschirp.test.TestObjMsg
 import bbharati.jmschirp.test.TestStreamMsgObj
 import bbharati.jmschirp.util.AppLogger
 import com.tibco.tibjms.TibjmsConnectionFactory
