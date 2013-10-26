@@ -1,0 +1,143 @@
+ $(document).ready(function()
+{
+     var HANDLEBAR_TEMPLATES = {
+      searchQDialog :   Handlebars.compile($("#searchQDialog-template").html()),
+      searchQObjMsgCN :  Handlebars.compile($("#searchQObjMsgCN-template").html()),
+      searchQObjMsgCN1 :  Handlebars.compile($("#searchQObjMsgCN1-template").html()) };
+
+	 //$('table').footable();
+     $('#queueListingTable').footable();
+
+
+	 $('.clear-filter').click(function (e) {
+        e.preventDefault();
+        $('table').trigger('footable_clear_filter');
+      });
+
+	 
+	 /* globalData to manage tab panel height on switching tabs without reloading the existing panel.
+	 This page is teh Summary tab of connectionDetails , and tab id will always be 1. */
+
+	 $(".ui-tabs-nav").children().each(function()
+	 {
+	 	 var eachHtml = $(this).text().trim();
+         console.log('connectionDetailsTab1 : handling panel height issue for summary tab - '+eachHtml);
+         if(eachHtml == 'Summary')
+         {
+         	var anchor = $(this).children();
+         	var anchorId = anchor.attr('id');
+         	console.log('connectionDetailsTab1: handling panel height issue for summary tab, anchorId - '+anchorId);
+         	var index = anchorId.substring(anchorId.lastIndexOf('-')+1);
+	        console.log('connectionDetailsTab1: index = '+index);
+
+         	globalTabsData['Summary'] = $("#ui-tabs-"+index).height();
+         	console.log('connectionDetailsTab1: globalTabsData = '+globalTabsData['Summary']);
+
+         }
+
+	 });
+
+
+   
+      //jquery dialog - start
+         $( "#searchQDialog" ).dialog({
+      autoOpen: false,
+      height: 600,
+      width: 500,
+      modal: true,
+      buttons: {
+        "Save": function() {
+         
+          
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      },
+      close: function() {
+        //allFields.val( "" ).removeClass( "ui-state-error" );
+      }
+    });
+
+    //jquery dialog - end
+    
+    //on selection of a specific className in searchQDialog for ObjectMessage type
+    $(".defaultSearchQClassName").click(function(){
+        var selectedId = this.id;
+
+        var selectedVal = $("#"+selectedId).val();
+        console.log('defaultSearchQClassName:selectedVal = '+selectedVal );
+
+        if(selectedVal != -1)
+        {
+             $("#searchQFieldSet").append(HANDLEBAR_TEMPLATES.searchQObjMsgCN({index : i + '-' +j}));
+
+        }
+    });
+
+	 
+});
+
+    //On click SearchQ button
+    function searchQAction(connectionName, qName)
+    {
+       console.log('searchQAction: entered with '+connectionName + " " +qName);
+
+        var postData = 'connection='+connectionName+'&queue='+qName;
+
+        makeAjaxPOSTRequest("../groovy/scripts/qSearcher.groovy",postData,searchQCallBack,{connection : connectionName, queue : qName});
+
+
+
+    }
+      /* Search queue callback -- this will display the search dialog */
+     function searchQCallBack(xmlhttp, searchQCallBackInput)
+     {
+           console.log('searchQCallBack: entered');
+           if (xmlhttp.status == 200)
+           {
+                 var jsonFormattedResponse = JSON.parse(xmlhttp.responseText);
+                 console.log('searchQCallBack: jsonFormattedResponse = '+jsonFormattedResponse);
+
+                 if(jsonFormattedResponse.msgType == 'ObjectMessage')
+                 {
+                      var objModel = jsonFormattedResponse.model;
+
+                       var defaultClassNameSelectOption = "<option value='-1'>Select</option>";
+
+                      for(var i = 0 ; i < objModel.length ; i++)
+                      {
+                          var className = objModel[i].className;
+                          var fieldDescList = objModel[i].fieldDescList;
+
+                          console.log('searchQCallBack: className = '+className);
+                          defaultClassNameSelectOption = defaultClassNameSelectOption +  "<option value='"+className+"'>"+className+"</option>";
+                          
+
+                          
+                         
+                          /*for(var j = 0 ; j < fieldDescList.length ; j++)
+                          {
+                              var fieldClassName = fieldDescList[j].fieldClassName;
+                              var fieldName = fieldDescList[j].fieldName;
+                              var hasMultipleValues = fieldDescList[j].hasMultipleValues;
+                              console.log('fieldClassName = '+fieldClassName+", fieldName =  "+fieldName);
+
+                              searchQFieldSet.append(HANDLEBAR_TEMPLATES.searchQDialog({index : i + '-' +j}));
+
+
+                          }*/
+
+                      }
+                      console.log('searchQCallBack: defaultClassNameSelectOption = '+defaultClassNameSelectOption);
+                      $("#defaultSearchQClassName").append(defaultClassNameSelectOption);
+
+                       $( "#searchQDialog" ).dialog( "open" );
+
+                 }
+
+
+           }    
+        
+     }
+

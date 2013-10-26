@@ -1,0 +1,38 @@
+.searchQCNDetailsDiv
+{
+    border-style: solid;
+    border-color: #D3D3D3;
+    height: 140px;
+    width: 450px;
+    border-width: 1px;
+    border-radius: 5px;
+}
+
+.searchQDialogMsgType
+{
+  font-size: 16px;
+  color: #C0C0C0;
+  text-shadow: -1px -1px 1px #000;
+}
+/* Aded important to width as bootstrap was overriding the property, even when 
+ the current CSS file is included later than bootstrap CSS */
+.addSearchCriteria
+{
+   width: 460px !important;
+}
+.deleteSearchCriteriaImg
+{
+   background-image: url("../images/small_cross2.png");
+    float: right;
+    height: 16px;
+    width: 16px;
+}
+.deleteSearchCriteriaDiv
+{
+float: left
+}
+
+.searchCriteriaInput
+{
+width: 80px !important;
+}

@@ -1,0 +1,45 @@
+.fooTblDiv
+{
+	display: none;
+	overflow: scroll;
+	
+}
+.progressBarOnScroll
+{
+	z-index: 1000;
+	position: absolute;
+}
+.closeIcon
+{
+    height: 16px;
+    width: 16px;
+    float: right;
+    /* http://findicons.com/icon/162187/bullet_cross?id=162871 */
+    background-image: url("../images/small_cross2.png");
+ 
+}
+
+.progressBar1
+{
+	float: right;
+}
+
+.nonTreeMsgDiv
+{
+		background-color: white;
+		padding: 10px;
+		overflow: auto;
+		padding: 3px;
+		word-wrap: break-word;
+}
+
+.msgId
+{
+  color: #0088CC;
+  cursor: pointer;
+}
+
+.msgId:hover
+{
+  text-decoration: underline;
+}
