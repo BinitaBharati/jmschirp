@@ -3,6 +3,7 @@
      [clostache.parser :as cp]
              ;[taoensso.timbre :as timbre]
              [clojure.tools.logging :as ctl]
+             [clojure.reflect :as cr]
              )
    (:import (java.io FileNotFoundException)
             (clojure.lang Reflector)))
@@ -89,15 +90,6 @@
           all-fields))
   )
 
-;(defn instance-field [target field-name]{:pre [(string? field-name)]}
-;  ;(log-info (str "instance-field: entered with " field-name))
-;  (let [target-class (.getClass target)
-;        java-field (get-field target-class field-name)]
-;     (cond
-;       (not (nil? java-field))
-;       (.get java-field target)
-;       :else (log-info "OOPs !"))
-;    ))
 
 (defn instance-field [target field-class field-name]{:pre [(instance? Class field-class) (string? field-name)]}
   (log-info (str "instance-field: entered with field-class = " field-class ", field-name = "field-name))
@@ -108,6 +100,32 @@
        (.get java-field target)
        :else (log-info "OOPs! - field-name = "field-name " not found in class = "field-class))
     ))
+
+(def str-or-num? (some-fn string? number?))
+
+(def str-or-num-or-char? (some-fn string? number? char?))
+
+(defn is-boolean? [input]
+  (cond
+    (or (instance? Boolean input) (instance? Boolean/TYPE input))
+    true
+    :else
+    false))
+
+(defn any-coll? [input]
+ (instance? java.util.Collection input))
+
+(defn any-map? [input]
+(instance? java.util.Map input))
+
+(defn any-array? [klass] {:pre [(instance? Class klass)]}
+  (.isArray klass)
+  )
+
+(defn primitive-array? [klass] {:pre [(any-array? klass)]}
+ (.isPrimitive (.getComponentType klass))
+ )
+
 
 (def country-code-domains 
   ["ac" "ad" "ae" "af" "ag" "ai" "al" "am" "an" "ao" "aq" "ar" "as" "at" "au" "aw" "ax" "az" "ba" "bb" "bd" "be" "bf"
@@ -187,4 +205,31 @@
 (defn klass-valid-for-inspection? [top-pkg-name klass-name]
  (and (nil? (re-seq oob-klass klass-name))  ;not OOB class
       (.startsWith klass-name top-pkg-name)  ;pkg name matching <ur pkg> name
-      ))
+))
+
+(defn filter-fields [obj top-pkg-name]
+  (log-info "filter-fields: entered for obj-type - " (type obj) ", obj = "obj)
+  (if (klass-valid-for-inspection? top-pkg-name (.getName (class obj)))
+      (->> 
+        (cr/reflect obj :ancestors true)
+        (echo-wit-msg-in-tl "#####")
+        ;{:bases #{java.io.Serializable java.lang.Object}, :flags #{:public}, :members #{#clojure.reflect.Field{:name strField, :type java.lang.String, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :flags #{:private}} #clojure.reflect.Field{:name serialVersionUID, :type long, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :flags #{:private :static :final}} #clojure.reflect.Method{:name setIntField, :return-type void, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [java.lang.Integer], :exception-types [], :flags #{:public}} #clojure.reflect.Field{:name listField, :type java.util.List, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :flags #{:private}} #clojure.reflect.Method{:name setListField, :return-type void, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [java.util.List], :exception-types [], :flags #{:public}} #clojure.reflect.Method{:name getStrField, :return-type java.lang.String, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [], :exception-types [], :flags #{:public}} #clojure.reflect.Method{:name getIntField, :return-type java.lang.Integer, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [], :exception-types [], :flags #{:public}} #clojure.reflect.Method{:name setStrField, :return-type void, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [java.lang.String], :exception-types [], :flags #{:public}} #clojure.reflect.Field{:name intField, :type java.lang.Integer, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :flags #{:private}} #clojure.reflect.Method{:name toString, :return-type java.lang.String, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [], :exception-types [], :flags #{:public}} #clojure.reflect.Constructor{:name bbharati.jmschirp.test.TestObjMsg_Java, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [], :exception-types [], :flags #{:public}} #clojure.reflect.Method{:name getListField, :return-type java.util.List, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [], :exception-types [], :flags #{:public}}}}
+        (:members)
+        ;(ju/echo);#{#clojure.reflect.Field{:name strField, :type java.lang.String, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :flags #{:private}} #clojure.reflect.Field{:name serialVersionUID, :type long, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :flags #{:private :static :final}} #clojure.reflect.Method{:name setIntField, :return-type void, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [java.lang.Integer], :exception-types [], :flags #{:public}} #clojure.reflect.Field{:name listField, :type java.util.List, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :flags #{:private}} #clojure.reflect.Method{:name setListField, :return-type void, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [java.util.List], :exception-types [], :flags #{:public}} #clojure.reflect.Method{:name getStrField, :return-type java.lang.String, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [], :exception-types [], :flags #{:public}} #clojure.reflect.Method{:name getIntField, :return-type java.lang.Integer, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [], :exception-types [], :flags #{:public}} #clojure.reflect.Method{:name setStrField, :return-type void, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [java.lang.String], :exception-types [], :flags #{:public}} #clojure.reflect.Field{:name intField, :type java.lang.Integer, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :flags #{:private}} #clojure.reflect.Method{:name toString, :return-type java.lang.String, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [], :exception-types [], :flags #{:public}} #clojure.reflect.Constructor{:name bbharati.jmschirp.test.TestObjMsg_Java, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [], :exception-types [], :flags #{:public}} #clojure.reflect.Method{:name getListField, :return-type java.util.List, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :parameter-types [], :exception-types [], :flags #{:public}}}
+        (filter 
+          (fn [each] (instance? clojure.reflect.Field each)))
+        ;(ju/echo-wit-msg "****");(#clojure.reflect.Field{:name strField, :type java.lang.String, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :flags #{:private}} #clojure.reflect.Field{:name serialVersionUID, :type long, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :flags #{:private :static :final}} #clojure.reflect.Field{:name listField, :type java.util.List, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :flags #{:private}} #clojure.reflect.Field{:name intField, :type java.lang.Integer, :declaring-class bbharati.jmschirp.test.TestObjMsg_Java, :flags #{:private}})
+        (filter 
+          (fn [each] (let [flags-set (:flags each)]
+                       (and (not (or (every? flags-set [:private :static :final]) ;(and (contains? flags-set :private) (contains? flags-set :static) (contains? flags-set :final))
+                                     (every? flags-set [:public :static :final])
+                                     (.isInterface (class obj))
+                                     ;(re-seq #"^java\.|^javax\.|^clojure\." (.getName (class obj)))
+                                     )) 
+                            (klass-valid-for-inspection? top-pkg-name (.getName (class obj)))))))
+        (echo-wit-msg-in-tl "filter-fields: exiting with ")
+        (into [])
+        (echo-wit-msg-in-tl "filter-fields: final exit"))
+      []  ;else return with empty vector
+    )
+)
