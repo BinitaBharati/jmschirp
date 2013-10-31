@@ -1,5 +1,6 @@
-(ns jmschirp.test.jms-obj-msg-sender
+(ns jmschirp.test.jms-tibco-obj-msg-sender
   (:import (bbharati.jmschirp.test1 TstClassObjGenerator)
+           (bbharati.jmschirp.test JmsObjectFactory_Java)
            (javax.jms Session ObjectMessage TextMessage BytesMessage StreamMessage MapMessage MessageProducer))
   (:require 
     [clojure.test :as ct]
@@ -27,17 +28,17 @@
      )))
 
 (ct/deftest send-obj-msg []
-  (ct/testing "send-obj-msg"
-        (loop [count 12
-               index 1]          
-          (if (= index count)
-          {}
-          (do 
-            (let [jms-access-params (get-jms-access-params {:connection "ems1" :queue "aTstQ4"})
-                  msg (TstClassObjGenerator/generateObj index)]
-              (ju/log-info "send-obj-msg: jms-access-params = "jms-access-params ", msg = "msg)
-              (->> (.createObjectMessage (get-in jms-access-params [:session]) msg)
-                (.send (get-in jms-access-params [:producer])))
-              )
-             (recur count (inc index)))))))
+  (ct/testing "send-obj-msg"              
+        (let [jms-access-params (get-jms-access-params {:connection "tibco_70" :queue "tst4"})]
+          (loop [count 1000
+                index 1]          
+           (if (= index count)
+           {}
+           (do 
+             (let [msg (TstClassObjGenerator/generateObj index)]
+               (ju/log-info "send-obj-msg: jms-access-params = "jms-access-params ", msg = "msg)
+               (->> (.createObjectMessage (get-in jms-access-params [:session]) msg)
+                 (.send (get-in jms-access-params [:producer])))
+               )
+              (recur count (inc index))))))))
 

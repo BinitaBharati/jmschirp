@@ -40,7 +40,7 @@
        result
      (do (recur (inc index) (conj result (conj (nth input index) {:id index})))))))
 
-(def default-supported-vd [{:type "EMS",:version "4.4.1",:provider-ns "jmschirp.adaptor.tibco"}
+(def default-supported-vd [{:type "EMS",:version "7.0",:provider-ns "jmschirp.adaptor.tibco"}
                            {:type "ActiveMQ",:version "5.8.0" :provider-ns "jmschirp.adaptor.activemq"}])
 
 (defn read-file [input]

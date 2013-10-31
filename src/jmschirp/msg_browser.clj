@@ -52,10 +52,10 @@
         (= msg-type "ObjectMessage")
         {:responseType "tree" :value (mbh/inspect-object-begin (.getObject (nth filter-msg 0)))}
         (= msg-type "TextMessage")
-        {:responseType "plain" :value (.getText filter-msg)}
+        {:responseType "plain" :value (.getText (nth filter-msg 0))}
         (or (= msg-type "StreamMessage") (= msg-type "MapMessage"))
         (do
-          (let [filter-msg-str (.toString filter-msg)]
+          (let [filter-msg-str (.toString (nth filter-msg 0))]
             {:responseType "plain" :value (.substring filter-msg-str (+ (.indexOf filter-msg-str "Fields=") (.length "Fields=")) (.lastIndexOf filter-msg-str "}"))})))
       {:responseType "plain" :value "MSG not found in queue!"})))
 

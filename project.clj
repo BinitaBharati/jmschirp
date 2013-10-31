@@ -15,9 +15,13 @@
   :profiles
   {:dev {:dependencies [[ring-mock "0.1.5"]
                         [log4j/log4j "1.2.17"]
-                         ;Refer to Tibco jars in Maven local repo. Use lein-localrepo to install jars in local Maven repo
-                        [com.tibco/tibems "4.4.1"]
-                        [com.tibco/tibjmsadmin "4.4.1"]
-                        [cisco-jms-chirp "0.1.0-SNAPSHOT"]
+                         ;Refer to Provider jars in Maven local repo. Use lein-localrepo to install jars in local Maven repo
+                        [com.tibco/tibems "7.0"]
+                        [com.tibco/tibjmsadmin "7.0"]
+                        [org.apache.activemq/activemq-broker "5.8.0"]
+                        [org.apache.activemq/activemq-all "5.8.0"]
+                        [org.apache.activemq/activemq-openwire-legacy "5.8.0"]
+                        [org.apache.activemq/activemq-client "5.8.0"]
+                        [org.apache.activemq/activemq-amqp "5.8.0"]
                         ]}}
   :java-source-paths ["java"])
