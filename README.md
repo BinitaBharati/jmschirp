@@ -19,7 +19,8 @@ java -classpath <provider specific jar file path><jmschirp jar> jmschirp.main
 Todo
 
 ### Pre-requisites
-* Java6 or higher is required.
+* Java6 or higher should be present. 
+* Leningen 2.3 or higher should be present.
 
 ## Usage
 
