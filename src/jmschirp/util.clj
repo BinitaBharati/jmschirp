@@ -6,6 +6,7 @@
              [clojure.reflect :as cr]
              )
    (:import (java.io FileNotFoundException)
+            (java.io File)
             (clojure.lang Reflector)))
 
 
@@ -43,6 +44,12 @@
 (def default-supported-vd [{:type "EMS",:version "7.0",:provider-ns "jmschirp.adaptor.tibco"}
                            {:type "ActiveMQ",:version "5.8.0" :provider-ns "jmschirp.adaptor.activemq"}])
 
+(defn mkdir-p [abs-dir]
+  (log-info "mkdir-p: entered with abs-dir = "abs-dir)
+  (let [file (File. abs-dir)]
+    (when-not (.exists file)
+      (.mkdir file))))
+
 (defn read-file [input]
   (try (->> (get input :path)
     (str (System/getProperty "user.home"))
@@ -54,6 +61,7 @@
       (if (= (get input :type) 0)
       []
       (do 
+        (mkdir-p (str (System/getProperty "user.home") "/.jmschirp"))
         (spit (str (System/getProperty "user.home") "/.jmschirp/supported-vendors.clj") (pr-str default-supported-vd))
         default-supported-vd)))))
 
