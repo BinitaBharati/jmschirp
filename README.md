@@ -11,20 +11,11 @@ As of now, JMSChirp caters to the following JMS vendors:
 * Download the &lt;jmschirp tar file link&gt;
 * Extract the tar to a desired location.
 * cd to the extracted root dircetory.
-* Run the below command to start the jmschirp process
-```
-java -classpath <provider specific jar file path><jmschirp jar> jmschirp.main
-``` 
+* Open the README.txt file for further instructions. 
  
-Todo
-
-### Pre-requisites
-* Java6 or higher should be present. 
-* Leningen 2.3 or higher should be present.
-
-## Usage
-
-Todo
+## Developer Notes
+* Java 6 or higher is required.
+* Leningen 2.3 or higher should be present. 
 
 ## License
 
