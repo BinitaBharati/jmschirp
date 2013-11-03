@@ -1,6 +1,6 @@
-(defproject jmschirp "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+(defproject jmschirp "0.1.0"
+  :description "A web based JMS browser for everyone"
+  :url "https://github.com/BinitaBharati/jmschirp"
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [compojure "1.1.5"]
                  [org.clojure/data.json "0.2.3"]
@@ -21,8 +21,7 @@
                                   [org.apache.activemq/activemq-all "5.8.0"]
                                   [org.apache.activemq/activemq-openwire-legacy "5.8.0"]
                                   [org.apache.activemq/activemq-client "5.8.0"]
-                                  [org.apache.activemq/activemq-amqp "5.8.0"]
-                                  ]}
+                                  [org.apache.activemq/activemq-amqp "5.8.0"]]}
              :uberjar {:aot [jmschirp.main] ;Ahead of time compile jmschirp.main
                        :dependencies [[ring/ring-jetty-adapter "1.2.1"]]
                        :main jmschirp.main  ;Add the main class into the generated jar's MANIFEST

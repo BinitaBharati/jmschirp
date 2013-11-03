@@ -1,6 +1,8 @@
-(ns jmschirp.test.jms-tibco-obj-msg-sender
+(ns jmschirp.test.jms-obj-msg-sender
   (:import (bbharati.jmschirp.test1 TstClassObjGenerator)
            (bbharati.jmschirp.test JmsObjectFactory_Java)
+           (com.cisco.ros.ng.common.alert.model AlertObjGenerator)
+           (com.cisco.services.assurance.ng.common.correlation CorObjGenerator)
            (javax.jms Session ObjectMessage TextMessage BytesMessage StreamMessage MapMessage MessageProducer))
   (:require 
     [clojure.test :as ct]
@@ -29,8 +31,8 @@
 
 (ct/deftest send-obj-msg []
   (ct/testing "send-obj-msg"              
-        (let [jms-access-params (get-jms-access-params {:connection "tibco_70" :queue "tst4"})]
-          (loop [count 1000
+        (let [jms-access-params (get-jms-access-params {:connection "tibco_70" :queue "aTstQ5"})]
+          (loop [count 5000
                 index 1]          
            (if (= index count)
            {}

@@ -8,5 +8,7 @@
 
 (defn -main [& args]
   ;; (Class/forName "org.apache.activemq.ActiveMQConnectionFactory")
-  (j/run-jetty (var h/app) {:port 3000}))
+  (j/run-jetty (var h/app) {:port (if-let [port-str (first args)]
+                                    (Integer/parseInt port-str)
+                                    3000)}))
 
