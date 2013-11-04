@@ -16,6 +16,7 @@
 
 
 (defroutes app-routes
+  (GET "/" [] (io/resource "public/index.html"))
   (GET "/jmschirp" [] (io/resource "public/index.html"))
   (GET "/list-connections" [] (json/write-str (home/list-conn)))
   (GET "/get-vendor-details" [] (json/write-str (home/get-valid-vd)))
