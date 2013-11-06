@@ -50,6 +50,9 @@
     (if (not (empty? filter-msg))
       (cond
         (= msg-type "ObjectMessage")
+        (try {:responseType "tree" :value (mbh/inspect-object-begin (.getObject (nth filter-msg 0)))}
+          (catch Exception ex  ;getObject may throw DeserializationException
+            {:responseType "plain" :value (.getMessage ex)}))
         {:responseType "tree" :value (mbh/inspect-object-begin (.getObject (nth filter-msg 0)))}
         (= msg-type "TextMessage")
         {:responseType "plain" :value (.getText (nth filter-msg 0))}

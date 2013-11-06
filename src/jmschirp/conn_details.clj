@@ -24,13 +24,23 @@
                       ju/echo
                       (get :provider-ns)
                       ju/echo)]
-      (ju/add-id (jmsadp/get-queue-stat (jmsadp/resolve-provider provider-ns) input))))
+    (try (->(jmsadp/resolve-provider provider-ns) 
+           (jmsadp/get-queue-stat input)
+           ju/add-id) 
+      (catch Exception ex
+        [{:exception-msg (.getMessage ex)}]))))
 
 (defn render-conn-details [input]
-  (cp/render-resource "public/templates/connectionDetails.mustache" {:jmsConnectionName (get input :name)  
+    (let [conn-queue-list (get-queue-list input)]
+    (ju/log-info "render-conn-details: conn-queue-list = "conn-queue-list)
+    (if (contains? (first conn-queue-list) :exception-msg)  ;Exception occured
+      (cp/render-resource "public/templates/connectiondetails-error.mustache" {:jmsConnectionName (get input :name)  
+                                                                               :rest-conn-names (get-rest-conn-names input)
+                                                                               :exception-msg (get-in (first conn-queue-list) [:exception-msg])})
+      (cp/render-resource "public/templates/connectionDetails.mustache" {:jmsConnectionName (get input :name)  
                                                               :rest-conn-names (get-rest-conn-names input)
-                                                              :conn-queue-list (get-queue-list input)}))
+                                                              :conn-queue-list (get-queue-list input)}))))
 
 (defn render-conn-tab1 [input]
   (cp/render-resource "public/templates/connectionDetailsTab1.mustache" {:jmsConnectionName (get input :name)  
-                                                        :conn-queue-list (get-queue-list input)}))
+                                              :conn-queue-list (get-queue-list input)}))
