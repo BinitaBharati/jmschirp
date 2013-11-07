@@ -150,6 +150,19 @@ tabCounter++;
 TAB_GLOBAL_PARAMS.tabCounter = tabCounter;
 }}
 
+function chkElementIdValidity(elemId)
+{
+    console.log('chkElementIdValidity: entered with '+elemId);
+    var newElemId = elemId;
+
+    if(elemId.indexOf('.') != -1) 
+    {
+         newElemId = elemId.replace(/\./g , "-");
+    }
+    console.log('chkElementIdValidity: exiting with newElemId = '+newElemId);
+    return newElemId;
+}
+
 
  
    
