@@ -43,3 +43,34 @@
 {
   text-decoration: underline;
 }
+
+.msgDetailsErrorDiv
+{
+background-color: #F5F5F5;
+border-style: solid;
+border-color: #E64016;
+border-width: 5px;
+padding: 10px;
+}
+
+.error-alert-img
+{
+float: left;
+margin-right: 0.3em;
+#background-position: 0 -144px;
+height: 24px;
+width: 24px;
+background-repeat: no-repeat;
+display: block;
+overflow: hidden;
+text-indent: -99999px;
+background-image: url("../images/error-24.png");
+}
+
+.error-message-text
+{
+color: #E64016;
+font-size: 2em;
+line-height: 1em;
+font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
+}

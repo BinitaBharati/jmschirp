@@ -69,11 +69,23 @@
    <!-- Handlebar js for client side templating - start -->
       <script id="msgDetailsDiv-template1" type="x-handlebars-template">
           <div id="{{msgDetailsDivId}}" class="msgDetailsDiv">
-                    <span  id="{{msgDetailsButtonId}}" class="closeIcon"></span>
+                    <span  id="{{msgDetailsButtonId}}" class="closeIcon" onclick="onCloseIconClick(this)"></span>
                <div id={{msgDivTreeId}}>
                </div>    
            </div>   
+         </script>
+
+      <script id="msgDetailsErrorDiv-template1" type="x-handlebars-template">
+        <div id="{{msgDetailsErrorDiv}}" class="msgDetailsErrorDiv">
+          <span id="{{msgDetailsErrorDivCloseIconId}}" class="closeIcon" onclick="onCloseIconClick(this)"></span>
+              <p>
+                  <span class="error-alert-img"></span>
+                  <span class="error-message-text">Oops!</span>
+              </p>
+              <div>{{errorMsg}}</div>  
+           </div>   
       </script>
+
 
     <script id="progressBarTemplate" type="x-handlebars-template">
     <div id="progressBar" class="ui-progressbar ui-widget ui-widget-content ui-corner-all ui-progressbar-indeterminate" role="progressbar" aria-valuemin="0">

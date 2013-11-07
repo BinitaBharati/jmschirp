@@ -18,7 +18,8 @@ $(function() {
          //msgDetailsDivTmpl :   Handlebars.compile($("#msgDetailsDiv-template").html()) ,
          msgDetailsDivTmpl1 :   Handlebars.compile($("#msgDetailsDiv-template1").html()) ,
          progressBarTemplate :   Handlebars.compile($("#progressBarTemplate").html()) ,
-         msgLinkDivTemplate : Handlebars.compile($("#msgLinkDiv-template1").html())
+         msgLinkDivTemplate : Handlebars.compile($("#msgLinkDiv-template1").html()),
+         msgDetailsErrorDivTemplate :  Handlebars.compile($("#msgDetailsErrorDiv-template1").html())
 
      };
 
@@ -263,13 +264,8 @@ $(function() {
                   console.log('msgDetailsCallBack: index = '+index+', tabId = '+tabId );
   
                   $("#"+clickedMsgId).css("display","none");
-                  $("#"+tabId+"-msgLinkTd-"+index).append(HANDLEBAR_TEMPLATES.msgDetailsDivTmpl1({
-                  msgDetailsDivId : msgDetailsDivId, 
-                  msgDetailsButtonId : msgDetailsButtonId, 
-                  msgDivTreeId : msgDivTreeId
-                }));
-
-                  $(".closeIcon").click(function()
+                 
+                  /*$(".closeIcon").click(function()
                   {
                         var closeIconId = this.id;
                         
@@ -281,32 +277,45 @@ $(function() {
 
                          $("#"+tabId+"-msgId-"+index).css("display","block");
 
-                   });
+                   });*/
 
                   if (xmlhttpResponse.status == 200)
                   {
                      var jsonResponse = JSON.parse(xmlhttpResponse.responseText);
 
-                     if(jsonResponse.responseType == 'tree')
+                     if(jsonResponse.responseType == 'exception')
                      {
-                           $("#"+msgDivTreeId).dynatree({
-                        children : jsonResponse.value
-                  
-                      });
+                          showMsgDetailsException(tabId, index, jsonResponse.value);
+                     }
+                     else  //success
+                     {
+                         $("#"+tabId+"-msgLinkTd-"+index).append(HANDLEBAR_TEMPLATES.msgDetailsDivTmpl1({
+                         msgDetailsDivId : msgDetailsDivId, 
+                         msgDetailsButtonId : msgDetailsButtonId, 
+                         msgDivTreeId : msgDivTreeId}));
+
+                        if(jsonResponse.responseType == 'tree')
+                        {
+                           $("#"+msgDivTreeId).dynatree({children : jsonResponse.value});
+
+                        }
+                        else
+                        {
+                             $("#"+msgDivTreeId).addClass('nonTreeMsgDiv');
+                             $("#"+msgDivTreeId).append(jsonResponse.value);
+                        }  
 
                      }
-                     else
-                     {
-                        $("#"+msgDivTreeId).addClass('nonTreeMsgDiv');
-                        $("#"+msgDivTreeId).append(jsonResponse.value);
-                     }  
+
                      hideProgressStatus(inputObj.queueName, inputObj.clickedMsgId);
 
                   }
                   else
                   {
-                        $("#"+msgDivTreeId).addClass('nonTreeMsgDiv');
-                        $("#"+msgDivTreeId).append("Internal server error.");
+                        //$("#"+msgDivTreeId).addClass('nonTreeMsgDiv');
+                        //$("#"+msgDivTreeId).append("Internal server error.");
+                        showMsgDetailsException(tabId, index, jsonResponse.value);
+
 
                         hideProgressStatus(inputObj.queueName, inputObj.clickedMsgId);
                   }
@@ -314,6 +323,32 @@ $(function() {
              
       
     };
+
+    function onCloseIconClick(clickedElement)
+    {
+                        var closeIconId = clickedElement.id;
+                        
+                        var index = closeIconId.substring(closeIconId.lastIndexOf('-')+1);
+                        var tabId = closeIconId.substring(0,closeIconId.indexOf('-'));
+
+                        console.log('closeIcon: entered with tabId '+tabId+', index = '+index);
+                         $("#"+tabId+"-msgDetailsDiv"+"-"+index).css("display","none");
+                          $("#"+tabId+"-msgDetailsErrorDiv"+"-"+index).css("display","none");
+
+
+                         $("#"+tabId+"-msgId-"+index).css("display","block");
+
+    }
+
+  function showMsgDetailsException(tabId, index, exceptionMsg)
+  {
+      var msgDetailsErrorDivId = tabId + "-msgDetailsErrorDiv-" + index;
+      $("#"+tabId+"-msgLinkTd-"+index).append(HANDLEBAR_TEMPLATES.msgDetailsErrorDivTemplate({
+                  msgDetailsErrorDiv : msgDetailsErrorDivId, 
+                  msgDetailsErrorDivCloseIconId : tabId + "-msgDetailsErrorDivCloseIconId-" + index,
+                  errorMsg : exceptionMsg}));
+
+  }
 
   function showMsgDetailsDiv1( e, jmsConnectionName, queueName, clickedMsgId )
   {
@@ -327,6 +362,8 @@ $(function() {
    
     var msgDivId = tabId+"-msgDetailsDiv-"+index;
     var msgDetailsDivNode = $("#"+msgDivId);
+
+    var msgDetailsErrorDivNode = $("#" + tabId + "-msgDetailsErrorDiv-" + index);
     
     /** 
     In the case of an element that does not exist on the page, jQuery will return an object with nothing in it - an empty object
@@ -335,6 +372,12 @@ $(function() {
     {
         $("#"+clickedMsgId).css("display","none");
         msgDetailsDivNode.css("display","block");
+    }
+    else if(msgDetailsErrorDivNode.length > 0)
+    {
+        $("#"+clickedMsgId).css("display","none");
+        msgDetailsErrorDivNode.css("display","block");
+
     }
     else
     {
