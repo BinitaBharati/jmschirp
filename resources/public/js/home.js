@@ -154,15 +154,12 @@ $(document).ready(function ()
         //var isValid = checkSelectedVendorType(connectionVendorType);
         return isValid;
     }
-    $( "#connectionDialog" ).dialog({
-      autoOpen: false,
-      height: 600,
-      width: 500,
-      modal: true,
-      buttons: {
-        "Save": function() {
-          var bValid = true;
-          allFields.removeClass( "ui-state-error" );
+
+    function getActionData(action)
+    {
+        var retMap = {};
+        var bValid = true;
+        allFields.removeClass( "ui-state-error" );
  
          /* bValid = bValid && checkLength( connectionName, "Name", 1, 40 );
          bValid = bValid && checkLength( connectionHost, "Host", 1, 40 );
@@ -191,24 +188,88 @@ $(document).ready(function ()
              
               //bValid = bValid && checkLength( jmxPort, "JMX port", 1, 40 );
          }
-         
-          if ( bValid ) 
-          {
+
+         if(bValid)
+         {
                 var connectionVendorTypeDom = document.getElementById('connectionVendorType');
                 var selectedVendorType = connectionVendorTypeDom.options[connectionVendorTypeDom.selectedIndex].text;
                 var connectionVendorVersionDom = document.getElementById('connectionVendorVersion');
                 var selectedVendorVersion = connectionVendorVersionDom.options[connectionVendorVersionDom.selectedIndex].text;
 
-                 var postData = "connectionName="+$("#connectionName").val()+"&vendorType="+selectedVendorType+"&vendorVersion="+selectedVendorVersion
+                 var postData;
+                
+                if(action == 1)  //Save
+                {
+                  postData = "connectionName="+$("#connectionName").val()+"&vendorType="+selectedVendorType+"&vendorVersion="+selectedVendorVersion
                  +"&host="+$("#connectionHost").val()+"&port="+$("#connectionPort").val()+"&adminUser="+$("#connectionUser").val()+"&adminPasswd="+$("#connectionPassword").val()
                  +"&jndiName="+$("#jndiName").val()+"&jndiUser="+$("#jndiUser").val()+"&jndiPassword="+$("#jndiPassword").val()+"&jmxPort="+$("#jmxPort").val()+"&jmxUser="+$("#jmxUser").val()+
                  "&jmxPassword="+$("#jmxPassword").val();
 
-                
+                }  
+                else if(action == 0)  //Test
+                {
+                     postData = "connectionName="+$("#connectionName").val()+"&type="+selectedVendorType+"&vendorVersion="+selectedVendorVersion
+                 +"&host="+$("#connectionHost").val()+"&port="+$("#connectionPort").val()+"&adminUser="+$("#connectionUser").val()+"&adminPasswd="+$("#connectionPassword").val()
+                 +"&jndiName="+$("#jndiName").val()+"&jndiUser="+$("#jndiUser").val()+"&jndiPasswd="+$("#jndiPassword").val()+"&jmxPort="+$("#jmxPort").val()+"&jmxUser="+$("#jmxUser").val()+
+                 "&jmxPasswd="+$("#jmxPassword").val();
 
+                }
                  var callBackInputObj = {jmsConnectionName : $("#connectionName").val()};
 
-                  if(saveBtnAction == 0)//CreateConnection
+                 retMap = {postData : postData , callBackInputObj : callBackInputObj };
+         }
+
+         return retMap;
+
+    }
+
+    $( "#connectionDialog" ).dialog({
+      autoOpen: false,
+      height: 600,
+      width: 500,
+      modal: true,
+      buttons: {
+        "Test": function(){
+                  
+           var actionData = getActionData(0);  
+           var postData = actionData.postData;
+           var callBackInputObj = actionData.callBackInputObj;
+
+           var actionDataLen = Object.keys(actionData).length;  //Cant get size of object directly, but can call a length on keys or values array.
+
+
+           console.log('Test: action, actionDataLen = '+actionDataLen);
+
+           if(actionDataLen > 0)
+           {
+                  var errorDialog =  $("<div id='testConnectionErrorDialog' title='Test'><p>Testing...</p></div>");
+
+                   errorDialog.dialog({dialogClass: "errorDialog", 
+                   modal: true,
+                  });
+
+                  makeAjaxPOSTRequest('/test-conn',postData,processTestConnectionCallBack, callBackInputObj );
+
+           }
+
+            
+        },
+        "Save": function() {
+           var actionData = getActionData(1); 
+            
+          var postData = actionData.postData;
+           var callBackInputObj = actionData.callBackInputObj;
+
+            console.log('Save: postData = '+postData+', callBackInputObj = '+callBackInputObj);
+
+
+           var actionDataLen = Object.keys(actionData).length;  //Cant get size of object directly, but can call a length on keys or values array.
+
+           console.log('Save: action, actionDataLen= '+actionDataLen);
+
+            if(actionDataLen > 0)
+            {
+                if(saveBtnAction == 0)//CreateConnection
                   {
                       checkConnectionNameUniquness($("#connectionName").val());
                       console.log('saveConnection: isUnique = '+isUnique);
@@ -258,11 +319,10 @@ $(document).ready(function ()
                                   $( this ).dialog( "close" );
                          
                   }
-                 
-                
-          }
 
-          
+            }
+                                 
+                
         },
         Cancel: function() {
           $( this ).dialog( "close" );
@@ -415,8 +475,35 @@ $(document).ready(function ()
         
     }
 
+    function processTestConnectionCallBack(xmlhttp, callBackInputObj)
+    {
+         console.log('processTestConnectionCallBack: entered with callBackInputObj = '+callBackInputObj );
+         if(xmlhttp.status == 200)
+        {
+              var jsonFormattedResponse = JSON.parse(xmlhttp.responseText);
+              var isValid = jsonFormattedResponse.isValid;
+              var validityResult = jsonFormattedResponse.validityResult;
+              console.log('processTestConnectionCallBack: validityResult = '+validityResult );
+
+              $( "#testConnectionErrorDialog" ).remove();
+
+              var errorDialog =  $("<div id='testConnectionErrorDialog1' title='Test'><p>"+validityResult+"</p></div>");
+
+              errorDialog.dialog({dialogClass: "errorDialog", 
+              modal: true,
+              buttons: 
+              {
+                        OK: function() {
+                           $( this ).dialog( "close" );
+              }}});
+                            
+        }
+
+    }
+
     function processSaveConnectionCallBack(xmlhttp, callBackInputObj)
     {
+            console.log('processSaveConnectionCallBack: entered with callBackInputObj = '+callBackInputObj );
             if (xmlhttp.status == 200)
             {
                 console.log('processSaveConnectionCallBack: entered');

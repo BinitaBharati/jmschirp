@@ -20,6 +20,7 @@
   (GET "/jmschirp" [] (io/resource "public/index.html"))
   (GET "/list-connections" [] (json/write-str (home/list-conn)))
   (GET "/get-vendor-details" [] (json/write-str (home/get-valid-vd)))
+  (POST "/test-conn" {params :params} (json/write-str(home/test-conn params)))
   (POST "/save-connections" {params :params} (json/write-str(home/save-conn params)))
   (GET "/delete-connection" {params :params} (json/write-str(home/save-conn (assoc params :action "2"))))
   (GET "/get-connection-info" {params :params} (json/write-str (home/get-conn-info2 params)))

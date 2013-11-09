@@ -1,5 +1,6 @@
 (ns jmschirp.landing
-  (:require [jmschirp.util :as ju])
+  (:require [jmschirp.util :as ju]
+            [jmschirp.adaptor :as jmsadp])
   (:import (java.io FileNotFoundException)))
 
 (defn list-conn []
@@ -9,8 +10,19 @@
 (defn get-valid-vd []
   (ju/get-valid-vd))
 
+(defn test-conn [input]
+  (ju/log-info "landing test-conn: entered with "input)
+  (-> (ju/get-supported-vd-info input)
+    ju/echo
+    (get :provider-ns)
+    ju/echo
+    (jmsadp/resolve-provider) 
+    ju/echo
+    (jmsadp/test-conn input))
+)
+
 (defn save-conn [input]
-  (print "testtt "  input)
+  (ju/log-info "save-conn: entered with "input)
   (let [action (get input :action)
         create-map (fn [input] {:name (get input :connectionName) 
                             :type (get input :vendorType) 

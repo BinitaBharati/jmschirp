@@ -172,3 +172,8 @@ background:#dddddd;
 {
     padding: 0px;
 }
+
+.progressBar1
+{
+z-index: 0;
+}

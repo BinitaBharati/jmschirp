@@ -31,6 +31,16 @@
                        ))
                   result)))
          (reduce [] queue-info-array)))
+  
+ 
+(defn test-conn-1 [input]
+   (-> (get-ems-jndi-context input)
+        (.lookup (get input :jndiName))))
+
+(defn test-conn-2 [input]
+   (-> (format "tcp://%s:%s" (get input :host) (get input :port))
+           ju/echo
+         (TibjmsAdmin. (get input :adminUser) (get input :adminPasswd))))
 
 (defn make-provider []
   (ju/log-info "make-provider entered")
@@ -51,4 +61,9 @@
           (.getQueues)
           (ju/echo)
           (get-queue-stat2)
-          ju/echo)))))
+          ju/echo)))
+    (-test-conn [this input]
+      (ju/log-info "tibco-adapter - test-conn: entered with input = "input)
+      (test-conn-1 input)
+      (test-conn-2 input)
+     )))
