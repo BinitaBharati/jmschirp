@@ -32,14 +32,13 @@
     []
     (read-string input)))
 
- 
-  (defn add-id [input]
-    "Add id to the input. Id is used in the browser to identify each DOM element.Input is a vector of maps."
-   (loop [index 0
-          result []]
-     (if (= index (count input))
-       result
-     (do (recur (inc index) (conj result (conj (nth input index) {:id index})))))))
+(defn add-id [input]
+  "Add id to the input. Id is used in the browser to identify each DOM element.Input is a vector of maps."
+ (loop [index 0
+        result []]
+   (if (= index (count input))
+     result
+   (do (recur (inc index) (conj result (conj (nth input index) {:id index})))))))
 
 (def default-supported-vd [{:type "EMS",:version "7.0",:provider-ns "jmschirp.adaptor.tibco"}
                            {:type "ActiveMQ",:version "5.8.0" :provider-ns "jmschirp.adaptor.activemq"}])

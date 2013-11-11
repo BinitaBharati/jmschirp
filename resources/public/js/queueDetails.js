@@ -1,10 +1,14 @@
 var HANDLEBAR_TEMPLATES;
 
-function init(connName, qName)
+function init(connName, qName, encodedQName)
       {
-        initProgressBar("tabSpecificProgressBar-"+qName);
+        initProgressBar("tabSpecificProgressBar-"+encodedQName);
+        GLOBAL_Q_DETAILS[encodedQName] = qName;
+
+        console.log('init: GLOBAL_Q_DETAILS = '+GLOBAL_Q_DETAILS );
    
-      makeAjaxGETRequest('/queue-browser?connection='+connName+'&queue='+qName+'&isScrolled=N',queueDetailsCallBack, {"queueName" : qName,"invokedFirstTime" : true}); 
+      makeAjaxGETRequest('/queue-browser?connection='+connName+'&queue='+qName+'&isScrolled=N',queueDetailsCallBack,
+          {"queueName" : qName,"invokedFirstTime" : true, "encodedQName" : encodedQName}); 
 
 
       }
@@ -81,6 +85,8 @@ $(function() {
      {
 
        console.log('scrollEnded: entered with queueName = '+queueName);
+       console.log('scrollEnded: GLOBAL_Q_DETAILS = '+Object.keys(GLOBAL_Q_DETAILS).length );
+
 
        var fooTblBodyNode = document.getElementById('fooTblBody-'+queueName);
        var lastTblRowNodeId = fooTblBodyNode.lastChild.id;
@@ -106,7 +112,11 @@ $(function() {
        initProgressBar(queueName+"-progressBarOnScroll");
        var jmsConnectionName= $("#connectionListDropDown option:selected").text();
 
-        makeAjaxGETRequest('/queue-browser?connection='+jmsConnectionName+'&queue='+queueName+'&isScrolled=Y',queueDetailsCallBack,{"queueName" : queueName,"invokedFirstTime" : false});
+       var realQName = GLOBAL_Q_DETAILS[queueName];
+       console.log('scrollEnded: realQName = '+realQName );
+
+
+        makeAjaxGETRequest('/queue-browser?connection='+jmsConnectionName+'&queue='+realQName+'&isScrolled=Y',queueDetailsCallBack,{"queueName" : queueName,"invokedFirstTime" : false, "encodedQName" : queueName});
          
      }
       
@@ -119,8 +129,8 @@ $(function() {
         {
         var jsonResponse = JSON.parse(xmlhttpResponse.responseText);
         
-        var queueName = callBackInputObject.queueName;
-        console.log('queueDetailsCallBack: jsonResponse.hasMore ' +jsonResponse.hasMore+',jsonResponse.empty = '+jsonResponse.empty);
+        var queueName = callBackInputObject.encodedQName;
+        console.log('queueDetailsCallBack: jsonResponse.hasMore ' +jsonResponse.hasMore+',jsonResponse.empty = '+jsonResponse.empty+ ', queueName = '+queueName);
         
         var fooTblBodyChildrenLen = $("#fooTblBody-"+queueName).children().length;
 

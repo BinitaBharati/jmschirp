@@ -3,13 +3,23 @@
   (:require [clostache.parser :as cp]
             [jmschirp.util :as ju]
             [jmschirp.adaptor :as jmsadp]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [clojure.string :as cs]))
+
+(defn encode-queue-name [queue-name]
+  (cond
+    (not (nil? (re-seq #"\." queue-name)))  ;queue-name contains dot
+    (cs/replace queue-name #"\." "-")
+    (not (nil? (re-seq #"-" queue-name)))
+    (cs/replace queue-name #"-+" #(str %1 "-"))
+    :else queue-name
+    ))
 
 (defn render-queue-details [params session]
   (ju/log-info "render-queue-details: entered with params = " params " session = " session)
    (cp/render-resource "public/templates/queueDetails.mustache" {:jmsConnectionName (get params :connection) 
-                                                                 :queueName (get params :queue)}))
-
+                                                                 :queueName (get params :queue)
+                                                                 :encodedQName (encode-queue-name (get params :queue))}))
 (defn get-queue-data-seq [params session]
    (if (= (get params :isScrolled) "N");fresh request
      (let [conn-info (ju/get-conn-info {:name (get params :connection)})

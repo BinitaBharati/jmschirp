@@ -59,7 +59,7 @@
 
        $(document).ready(function()
         {
-          init('<%jmsConnectionName%>', '<%queueName%>');
+          init('<%jmsConnectionName%>', '<%queueName%>',  '<%encodedQName%>');
 
 
         });
@@ -105,12 +105,12 @@
       
     <!-- Handlebar js for client side templating - end --> 
 
-    <div id="tabSpecificProgressBar-<%queueName%>"></div>  
+    <div id="tabSpecificProgressBar-<%encodedQName%>"></div>  
 
-    <div id="fooTblDivEmptyQ-<%queueName%>" class="fooTblDiv">
+    <div id="fooTblDivEmptyQ-<%encodedQName%>" class="fooTblDiv">
     </div> 
 
-   <div id="fooTblDiv-<%queueName%>" class="fooTblDiv">
+   <div id="fooTblDiv-<%encodedQName%>" class="fooTblDiv">
 
    <!-- <div class="searchDiv">
         <div class="searchDivTblRow">
@@ -123,7 +123,7 @@
     </div> -->
 
    
-    <table data-filter="#filter" class="footable" id="footable-<%queueName%>">
+    <table data-filter="#filter" class="footable" id="footable-<%encodedQName%>">
       <thead>
         <tr>  
           <th>
@@ -138,7 +138,7 @@
           
         </tr>
       </thead>
-      <tbody id="fooTblBody-<%queueName%>">
+      <tbody id="fooTblBody-<%encodedQName%>">
         
        
       </tbody>    
@@ -147,6 +147,6 @@
 
     <!-- <ul id="pagination" class="footable-nav"><span>Pages:</span></ul> -->
   </div> <!-- end fooTable div -->
-    
+  
   </body>
 </html>
