@@ -116,8 +116,17 @@ var filteredResult = $('.ui-tabs-anchor').filter(function() {
     //alert($(this).text());
     if($(this).text() == tabName)
     {
-       //alert($(this).attr('id'));
-       $(this).click();
+       var selectTabId = $(this).attr('id');
+       console.log('addTab: tabExists is true, selectTabId = '+selectTabId);
+       var selectId = selectTabId.substring(selectTabId.lastIndexOf('-')+1);
+       console.log('addTab: tabExists is true, selectId = '+selectId);
+
+       var tabs =  TAB_GLOBAL_PARAMS.tabs;
+       var active = tabs.tabs( "option", "active" );
+       console.log('addTab: tabExists is true, current active tab = '+active);
+
+       tabs.tabs( "option", "active", (selectId-1));//tab-index is negative. so, this API assumes tab-index starting from 0 to ...
+       //$(this).click();
        tabExists = true;
        return;   
     }
