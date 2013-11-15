@@ -1,11 +1,12 @@
 # JMSChirp
 *Welcome to JmsChirp. Your friendly JMS browser !*
-*http://jmschirp.sourceforge.net/
 
 As of now, JMSChirp caters to the following JMS vendors:  
 * Apache ActiveMQ (5.8.0)
 * Tibco EMS (7.0)
 
+##Project home
+http://jmschirp.sourceforge.net/
 
 ## Installation
 * Download the artifact from http://jmschirp.sourceforge.net/ 
