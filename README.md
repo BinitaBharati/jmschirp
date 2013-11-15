@@ -9,7 +9,7 @@ As of now, JMSChirp caters to the following JMS vendors:
 http://jmschirp.sourceforge.net/
 
 ## Installation
-* Download the artifact from http://jmschirp.sourceforge.net/ 
+* Download the artifact from http://jmschirp.sourceforge.net/
 * Extract the tar/zip to a desired location.
 * cd to the extracted root dircetory.
 * Open the README.txt file for further instructions. 
