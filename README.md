@@ -1,6 +1,6 @@
 # JMSChirp
-
 *Welcome to JmsChirp. Your friendly JMS browser !*
+*http://jmschirp.sourceforge.net/
 
 As of now, JMSChirp caters to the following JMS vendors:  
 * Apache ActiveMQ (5.8.0)
@@ -8,7 +8,7 @@ As of now, JMSChirp caters to the following JMS vendors:
 
 
 ## Installation
-* Download the artifact from https://sourceforge.net/projects/jmschirp/
+* Download the artifact from http://jmschirp.sourceforge.net/ 
 * Extract the tar/zip to a desired location.
 * cd to the extracted root dircetory.
 * Open the README.txt file for further instructions. 
