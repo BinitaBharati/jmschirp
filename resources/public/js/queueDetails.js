@@ -346,9 +346,19 @@ $(function() {
 
                         
                         var index = closeIconId.substring(closeIconId.lastIndexOf('-')+1);
-                        var tabId = closeIconId.substring(0,closeIconId.indexOf('msgDetailsButton') - 1);
+                        var tabId = -1;
+                        
+                        if (closeIconId.indexOf('msgDetailsButton') != -1)
+                        {
+                          tabId = closeIconId.substring(0,closeIconId.indexOf('msgDetailsButton') - 1);
 
-                        console.log('closeIcon: entered with tabId = '+tabId+', index = '+index);
+                        }
+                        else if (closeIconId.indexOf('msgDetailsErrorDivCloseIconId') != -1)
+                        {
+                          tabId = closeIconId.substring(0,closeIconId.indexOf('msgDetailsErrorDivCloseIconId') - 1);
+
+                        }
+                        console.log('closeIcon: entered with tabId1 = '+tabId+', index = '+index);
                          $("#"+tabId+"-msgDetailsDiv"+"-"+index).css("display","none");
                           $("#"+tabId+"-msgDetailsErrorDiv"+"-"+index).css("display","none");
 
