@@ -1,4 +1,4 @@
-(defproject jmschirp "0.1.0"
+(defproject jmschirp "0.1.1"
   :description "A web based JMS browser for everyone"
   :url "https://github.com/BinitaBharati/jmschirp"
   :dependencies [[org.clojure/clojure "1.5.1"]
