@@ -2,6 +2,7 @@ var HANDLEBAR_TEMPLATES;
 
 function init(connName, qName, encodedQName)
       {
+        console.log('init: entered with connName = '+connName+', qName = '+qName+', encodedQName = '+encodedQName);
         initProgressBar("tabSpecificProgressBar-"+encodedQName);
         GLOBAL_Q_DETAILS[encodedQName] = qName;
 
@@ -43,12 +44,12 @@ $(function() {
 
           var targetId = target.getAttribute('id');
 
-          var queueName = targetId.substring(targetId.indexOf('-')+1);
+          var encodedQueueName = targetId.substring(targetId.indexOf('-')+1);
           
           var scrolledDivId = targetId;//this.id;
-          console.log('scroll: targetId = '+targetId+', queueName = '+queueName);
+          console.log('scroll: targetId = '+targetId+', encodedQueueName = '+encodedQueueName);
 
-          var queueMap = (queueName in globalQueueData) ? globalQueueData[queueName] : {};
+          var queueMap = (encodedQueueName in globalQueueData) ? globalQueueData[encodedQueueName] : {};
 
           var hasMore = queueMap['hasMore'];
           var lastScrollTop = ('lastScrollTop' in queueMap) ? queueMap['lastScrollTop'] : 0;
@@ -66,9 +67,9 @@ $(function() {
                   {
                       clearTimeout(scrollTimer);
                   }
-                  scrollTimer = setTimeout(function(){scrollEnded(queueName)}, 500);//500ms should be enough for a user to complete scroll
+                  scrollTimer = setTimeout(function(){scrollEnded(encodedQueueName)}, 500);//500ms should be enough for a user to complete scroll
                   queueMap['scrollTimer'] = scrollTimer;
-                  globalQueueData[queueName] = queueMap;
+                  globalQueueData[encodedQueueName] = queueMap;
                     
               }
           
@@ -76,47 +77,47 @@ $(function() {
           //else, scroll top has happened, do nothing 
           console.log('scroll: at chk point');
           queueMap['lastScrollTop'] = currentSt;
-          globalQueueData[queueName] = queueMap;
+          globalQueueData[encodedQueueName] = queueMap;
           
                
       });
 
-     function scrollEnded(queueName)
+     function scrollEnded(encodedQueueName)
      {
 
-       console.log('scrollEnded: entered with queueName = '+queueName);
+       console.log('scrollEnded: entered with encodedQueueName = '+encodedQueueName);
        console.log('scrollEnded: GLOBAL_Q_DETAILS = '+Object.keys(GLOBAL_Q_DETAILS).length );
 
 
-       var fooTblBodyNode = document.getElementById('fooTblBody-'+queueName);
+       var fooTblBodyNode = document.getElementById('fooTblBody-'+encodedQueueName);
        var lastTblRowNodeId = fooTblBodyNode.lastChild.id;
        var lastShownRowIdx = lastTblRowNodeId.substring(lastTblRowNodeId.lastIndexOf('-')+1);
        console.log('scrollEnded: lastShownRowIdx = '+lastShownRowIdx);
 
 
-       var lastTdNodeId = queueName+"-msgLinkTd-"+(lastShownRowIdx - 1);
+       var lastTdNodeId = encodedQueueName+"-msgLinkTd-"+(lastShownRowIdx - 1);
 
        var lastTdNodePosition = $("#"+lastTdNodeId).position();
 
        var progressBarOnScrollDiv = document.createElement('div');
-       progressBarOnScrollDiv.id=queueName+"-progressBarOnScroll";
+       progressBarOnScrollDiv.id=encodedQueueName+"-progressBarOnScroll";
        progressBarOnScrollDiv.style.position='absolute';
        progressBarOnScrollDiv.style.zIndex = 1000;
        progressBarOnScrollDiv.style.top = lastTdNodePosition.top +'px';
        progressBarOnScrollDiv.style.left = lastTdNodePosition.left +'px';
        progressBarOnScrollDiv.style.width = '95.9%';
 
-       var tblDiv = document.getElementById("fooTblDiv-"+queueName);
+       var tblDiv = document.getElementById("fooTblDiv-"+encodedQueueName);
        tblDiv.appendChild(progressBarOnScrollDiv);
 
-       initProgressBar(queueName+"-progressBarOnScroll");
+       initProgressBar(encodedQueueName+"-progressBarOnScroll");
        var jmsConnectionName= $("#connectionListDropDown option:selected").text();
 
-       var realQName = GLOBAL_Q_DETAILS[queueName];
+       var realQName = GLOBAL_Q_DETAILS[encodedQueueName];
        console.log('scrollEnded: realQName = '+realQName );
 
 
-        makeAjaxGETRequest('/queue-browser?connection='+jmsConnectionName+'&queue='+realQName+'&isScrolled=Y',queueDetailsCallBack,{"queueName" : queueName,"invokedFirstTime" : false, "encodedQName" : queueName});
+        makeAjaxGETRequest('/queue-browser?connection='+jmsConnectionName+'&queue='+realQName+'&isScrolled=Y',queueDetailsCallBack,{"queueName" : realQName,"invokedFirstTime" : false, "encodedQName" : encodedQueueName});
          
      }
       
@@ -129,33 +130,36 @@ $(function() {
         {
         var jsonResponse = JSON.parse(xmlhttpResponse.responseText);
         
-        var queueName = callBackInputObject.encodedQName;
-        console.log('queueDetailsCallBack: jsonResponse.hasMore ' +jsonResponse.hasMore+',jsonResponse.empty = '+jsonResponse.empty+ ', queueName = '+queueName);
+        var encodedQName = callBackInputObject.encodedQName;
+        var queueName = callBackInputObject.queueName;
+
+        console.log('queueDetailsCallBack: jsonResponse.hasMore ' +jsonResponse.hasMore+',jsonResponse.empty = '+jsonResponse.empty+ ', queueName1 = '+queueName
+            +', encodedQName = '+encodedQName);
         
-        var fooTblBodyChildrenLen = $("#fooTblBody-"+queueName).children().length;
+        var fooTblBodyChildrenLen = $("#fooTblBody-"+encodedQName).children().length;
 
 
         if(jsonResponse.empty && fooTblBodyChildrenLen == 0)
         {
-            $("#fooTblDivEmptyQ-"+queueName).append("<p>"+jsonResponse.msgData[0]+"</p>");
-            $("#fooTblDivEmptyQ-"+queueName).css("display", "block");
-            destroyProgressBar("tabSpecificProgressBar-"+queueName);
+            $("#fooTblDivEmptyQ-"+encodedQName).append("<p>"+jsonResponse.msgData[0]+"</p>");
+            $("#fooTblDivEmptyQ-"+encodedQName).css("display", "block");
+            destroyProgressBar("tabSpecificProgressBar-"+encodedQName);
 
             return;
         }
          
          var lastRetrievedMsgIndex = 0;
-         var fooTblBodyNode = $('#fooTblBody-'+queueName);
+         var fooTblBodyNode = $('#fooTblBody-'+encodedQName);
 
          //var dataStore = fooTblBodyNode.data("store");
-         var queueMap = (queueName in globalQueueData)? globalQueueData[queueName]: {};
+         var queueMap = (encodedQName in globalQueueData)? globalQueueData[encodedQName]: {};
          queueMap['hasMore'] = jsonResponse.hasMore;
-         globalQueueData[queueName] = queueMap;
+         globalQueueData[encodedQName] = queueMap;
 
          if(fooTblBodyChildrenLen > 0)
          {
               //Implies, this is not the first time, this page has been requested. (Will happen on scroll)
-               var domfooTblBodyNode = document.getElementById("fooTblBody-"+queueName);
+               var domfooTblBodyNode = document.getElementById("fooTblBody-"+encodedQName);
                var lastTblRowNodeId = domfooTblBodyNode.lastChild.id;
                lastRetrievedMsgIndex = lastTblRowNodeId.substring(lastTblRowNodeId.lastIndexOf('-')+1);
 
@@ -170,17 +174,18 @@ $(function() {
               lastRetrievedMsgIndex++;
               console.log('queueDetailsCallBack: each msgData = '+msgData[i]);
 
-              var fooTblBody = document.getElementById('fooTblBody-'+queueName);
+              var fooTblBody = document.getElementById('fooTblBody-'+encodedQName);
 
                var tdData = document.createElement("td");
                tdData.innerHTML = msgData[i].type;
 
                var tdData1 = document.createElement("td");
-               tdData1.id=queueName+"-msgLinkTd-"+lastRetrievedMsgIndex;
+               tdData1.id=encodedQName+"-msgLinkTd-"+lastRetrievedMsgIndex;
 
                var msgId = msgData[i].JMSMessageID;
                
-               tdData1.innerHTML = HANDLEBAR_TEMPLATES.msgLinkDivTemplate({queueName : queueName, lastRetrievedMsgIndex : lastRetrievedMsgIndex,
+              console.log('queueDetailsCallBack: before rendering handlebar ,encodedQName = '+encodedQName+', queueName = '+queueName); 
+               tdData1.innerHTML = HANDLEBAR_TEMPLATES.msgLinkDivTemplate({encodedQName : encodedQName, queueName : queueName, lastRetrievedMsgIndex : lastRetrievedMsgIndex,
                msgId :  msgData[i].JMSMessageID});
 
       
@@ -188,7 +193,7 @@ $(function() {
                tdData2.innerHTML = msgData[i].JMSRedelivered;
 
                var trRow = document.createElement("tr");
-               trRow.id = queueName+"-trRow-"+lastRetrievedMsgIndex;
+               trRow.id = encodedQName+"-trRow-"+lastRetrievedMsgIndex;
 
                trRow.appendChild(tdData1);
                trRow.appendChild(tdData2);
@@ -200,27 +205,27 @@ $(function() {
           
          if(callBackInputObject.invokedFirstTime)
           {
-            destroyProgressBar("tabSpecificProgressBar-"+queueName);
+            destroyProgressBar("tabSpecificProgressBar-"+encodedQName);
           }
           else
           {
             console.log('queueDetailsCallBack: in else part');
-            var testId = queueName+"-progressBarOnScroll";
+            var testId = encodedQName+"-progressBarOnScroll";
             console.log('queueDetailsCallBack: testId = '+testId);
             var test1 = $("#"+testId).length;
             console.log('queueDetailsCallBack: test1 = '+test1);
 
-            $("#"+queueName+"-progressBarOnScroll").remove();
+            $("#"+encodedQName+"-progressBarOnScroll").remove();
           } 
                    
-          $('#footable-'+queueName).footable();
+          $('#footable-'+encodedQName).footable();
             
-          $("#fooTblDiv-"+queueName).css("display", "block");
+          $("#fooTblDiv-"+encodedQName).css("display", "block");
 
          /* globalData to manage tab panel height on switching tabs without reloading the existing panel.
          This page is teh Summary tab of connectionDetails , and tab id will always be 1. */
 
-         handlePanelHeightHouseKeeping(queueName);
+         handlePanelHeightHouseKeeping(encodedQName);
 
         //Ref : http://stackoverflow.com/questions/14969960/jquery-click-events-firing-multiple-times
 
@@ -262,9 +267,9 @@ $(function() {
                   var clickedMsgId = inputObj.clickedMsgId;
                   console.log('msgDetailsCallBack: clickedMsgId = '+clickedMsgId );
 
-                  var index = clickedMsgId.substring(clickedMsgId.lastIndexOf('-')+1);
-                  var tabId = clickedMsgId.substring(0,clickedMsgId.indexOf('-'));
-
+                   var index = clickedMsgId.substring(clickedMsgId.lastIndexOf('-')+1);
+                   var tabId = clickedMsgId.substring(0,clickedMsgId.indexOf('msgId') - 1);
+ 
                   var msgDivId = tabId+"-msgDetailsDiv-"+index;
                   var msgDetailsDivNode = $("#"+msgDivId);
                   
@@ -337,11 +342,13 @@ $(function() {
     function onCloseIconClick(clickedElement)
     {
                         var closeIconId = clickedElement.id;
+                         console.log('closeIcon: entered with closeIconId '+closeIconId);
+
                         
                         var index = closeIconId.substring(closeIconId.lastIndexOf('-')+1);
-                        var tabId = closeIconId.substring(0,closeIconId.indexOf('-'));
+                        var tabId = closeIconId.substring(0,closeIconId.indexOf('msgDetailsButton') - 1);
 
-                        console.log('closeIcon: entered with tabId '+tabId+', index = '+index);
+                        console.log('closeIcon: entered with tabId = '+tabId+', index = '+index);
                          $("#"+tabId+"-msgDetailsDiv"+"-"+index).css("display","none");
                           $("#"+tabId+"-msgDetailsErrorDiv"+"-"+index).css("display","none");
 
@@ -360,14 +367,16 @@ $(function() {
 
   }
 
-  function showMsgDetailsDiv1( e, jmsConnectionName, queueName, clickedMsgId )
+  function showMsgDetailsDiv1( e, jmsConnectionName, queueName, encodedQName, clickedMsgId )
   {
-    console.log('showMsgDetailsDiv1: clickedMsgId = '+clickedMsgId+', jmsConnectionName = '+jmsConnectionName);
+    console.log('showMsgDetailsDiv1: clickedMsgId = '+clickedMsgId+', jmsConnectionName = '+jmsConnectionName+',queueName = '+queueName+', encodedQName = '+encodedQName);
 
     var index = clickedMsgId.substring(clickedMsgId.lastIndexOf('-')+1);
-    var tabId = clickedMsgId.substring(0,clickedMsgId.indexOf('-'));
+    var tabId = clickedMsgId.substring(0,clickedMsgId.indexOf('msgId') - 1);
+    console.log('showMsgDetailsDiv1: index = '+index+', tabId = '+tabId);
 
-    var msgIdVal = $("#"+tabId+'-msgId-'+index).text();
+    var msgIdVal = $("#"+clickedMsgId).text();
+
     console.log('showMsgDetailsDiv1: msgIdVal = '+msgIdVal);
    
     var msgDivId = tabId+"-msgDetailsDiv-"+index;
@@ -391,9 +400,9 @@ $(function() {
     }
     else
     {
-        showProgressStatus(queueName, clickedMsgId);
+        showProgressStatus(encodedQName, clickedMsgId);
 
-        makeAjaxGETRequest('/msg-browser?connection='+jmsConnectionName+'&queue='+queueName+'&jmsMsgId='+msgIdVal,msgDetailsCallBack,{"clickedMsgId" : clickedMsgId, "queueName" : queueName});   
+        makeAjaxGETRequest('/msg-browser?connection='+jmsConnectionName+'&queue='+queueName+'&jmsMsgId='+msgIdVal,msgDetailsCallBack,{"clickedMsgId" : clickedMsgId, "queueName" : encodedQName});   
     }
   
   }
@@ -450,15 +459,15 @@ $(function() {
   }
 
 
-     function onMsgLinkClick(clickedElement, queueName)
+     function onMsgLinkClick(clickedElement, queueName, encodedQName )
      {
-             console.log('msgLinkDiv:click');
+             console.log('msgLinkDiv:click ; queueName = '+queueName+', encodedQName = '+encodedQName);
              var clickedElementId = clickedElement.id;
              var msgIdVal = $("#"+clickedElementId).html();
 
               console.log('msgLinkDiv:click, clickedElementId = '+clickedElementId+', msgIdVal = '+msgIdVal);
               var jmsConnectionName= $("#connectionListDropDown option:selected").text();
-              showMsgDetailsDiv1(null, jmsConnectionName, queueName, clickedElementId );
+              showMsgDetailsDiv1(null, jmsConnectionName, queueName, encodedQName, clickedElementId );
      }
 
   

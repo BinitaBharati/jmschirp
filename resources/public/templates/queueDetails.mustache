@@ -97,8 +97,8 @@
   </script>
 
    <script id="msgLinkDiv-template1" type="x-handlebars-template">
-     <div class="msgLinkDiv" id="{{queueName}}-msgLinkDiv-{{lastRetrievedMsgIndex}}">
-      <span id="{{queueName}}-msgId-{{lastRetrievedMsgIndex}}" class="msgId" href="#" onclick="onMsgLinkClick(this,'{{queueName}}')">{{msgId}}</span>
+     <div class="msgLinkDiv" id="{{encodedQName}}-msgLinkDiv-{{lastRetrievedMsgIndex}}">
+       <span id="{{encodedQName}}-msgId-{{lastRetrievedMsgIndex}}" class="msgId" href="#" onclick="onMsgLinkClick(this,'{{queueName}}', '{{encodedQName}}')">{{msgId}}</span>
     </div>  
   </script>
 
