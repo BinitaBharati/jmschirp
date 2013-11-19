@@ -31,8 +31,8 @@
 
 (ct/deftest send-obj-msg []
   (ct/testing "send-obj-msg"              
-        (let [jms-access-params (get-jms-access-params {:connection "tibco_70" :queue "aTstQ5"})]
-          (loop [count 5000
+        (let [jms-access-params (get-jms-access-params {:connection "active-mq-localhost" :queue " tstObjQ1"})]
+          (loop [count 100
                 index 1]          
            (if (= index count)
            {}

@@ -49,28 +49,34 @@
   (nil? (get-in session [(get params :connection)])) ;connection itself absent
   (do 
     (ju/log-info "update-queue-browser-session: cond1, session = "session)
-    (assoc session (get params :connection) {(get params :queue) {:pending-queue-ds queue-data-seq}})
-    
-    )
+    (let [ret-session (assoc session (get params :connection) {(get params :queue) {:pending-queue-ds queue-data-seq}})]
+      (ju/log-info "update-queue-browser-session: cond1, ret-session = "ret-session)
+      ret-session))
   (nil? (get-in session [(get params :connection) (get params :queue)]))  ;connection presnt but queue absent
   (do (ju/log-info "update-queue-browser-session: cond2, session = "session)
-    (assoc session (get params :connection) 
-          (-> (get-in session [(get params :connection)])
-            (ju/echo-wit-msg "1111 - echo")
-            (assoc (get params :queue) {:pending-queue-ds queue-data-seq})
-            (ju/echo-wit-msg "222 - echo")))
+    (let [ret-session (assoc session (get params :connection) 
+                          (-> (get-in session [(get params :connection)])
+                            (ju/echo-wit-msg "1111 - echo")
+                            (assoc (get params :queue) {:pending-queue-ds queue-data-seq})
+                            (ju/echo-wit-msg "222 - echo")))]
+      (ju/log-info "update-queue-browser-session: cond2, ret-session = "ret-session)
+      ret-session
+      )
     )
   :else  ;connection and queue entry present
   (do 
     (ju/log-info "update-queue-browser-session: cond3 , session = "session)
-    (->>(->(get-in session [(get params :connection) (get params :queue)])
-         ju/echo
-         (assoc :pending-queue-ds queue-data-seq)
-         ju/echo)
-     (assoc (get-in session [(get params :connection)]) (get params :queue))
-     ju/echo
-     (assoc session (get params :connection))
-     ju/echo)
+    (let [ret-session (->>(->(get-in session [(get params :connection) (get params :queue)])
+                         ju/echo
+                         (assoc :pending-queue-ds queue-data-seq)
+                         ju/echo)
+                     (assoc (get-in session [(get params :connection)]) (get params :queue))
+                     ju/echo
+                     (assoc session (get params :connection))
+                     ju/echo)]
+      (ju/log-info "update-queue-browser-session: cond3, ret-session = "ret-session)
+      ret-session
+      )
     )))
 
 (defn save-qds-session [queue-data-seq  params session]
