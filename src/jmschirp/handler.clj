@@ -18,7 +18,7 @@
 (defroutes app-routes
   (GET "/" [] (io/resource "public/index.html"))
   (GET "/jmschirp" [] (io/resource "public/index.html"))
-  (GET "/list-connections" [] (json/write-str (home/list-conn)))
+  (GET "/list-connections" {session :session} (home/list-conn session)) ;update the session that will be later used in /queue-details. /list-connection is called when home page is being loaded.
   (GET "/get-vendor-details" [] (json/write-str (home/get-valid-vd)))
   (POST "/test-conn" {params :params} (json/write-str(home/test-conn params)))
   (POST "/save-connections" {params :params} (json/write-str(home/save-conn params)))

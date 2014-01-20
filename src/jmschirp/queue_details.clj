@@ -21,6 +21,7 @@
                                                                  :queueName (get params :queue)
                                                                  :encodedQName (encode-queue-name (get params :queue))}))
 (defn get-queue-data-seq [params session]
+  (ju/log-info "get-queue-data-seq: entered with "params)
    (if (= (get params :isScrolled) "N");fresh request
      (let [conn-info (ju/get-conn-info {:name (get params :connection)})
            provider-ns (-> conn-info
@@ -39,45 +40,38 @@
            (.createBrowser queue-ref)
            (.getEnumeration)
            (enumeration-seq))))
-     (get-in session [(:connection params) (:queue params) :pending-queue-ds])
-     ))
+     (get-in @(:data session) [(:connection params) (:queue params) :pending-queue-ds])))
+
 
 (defn update-queue-browser-session [queue-data-seq  params session]
-  (ju/log-info "update-queue-browser-session: entered with params = " params ", session = "session)
-  (ju/log-info "update-queue-browser-session: 111 "(get-in session [(get params :connection)]))
-(cond 
-  (nil? (get-in session [(get params :connection)])) ;connection itself absent
-  (do 
-    (ju/log-info "update-queue-browser-session: cond1, session = "session)
-    (let [ret-session (assoc session (get params :connection) {(get params :queue) {:pending-queue-ds queue-data-seq}})]
-      (ju/log-info "update-queue-browser-session: cond1, ret-session = "ret-session)
-      ret-session))
-  (nil? (get-in session [(get params :connection) (get params :queue)]))  ;connection presnt but queue absent
-  (do (ju/log-info "update-queue-browser-session: cond2, session = "session)
-    (let [ret-session (assoc session (get params :connection) 
-                          (-> (get-in session [(get params :connection)])
-                            (ju/echo-wit-msg "1111 - echo")
-                            (assoc (get params :queue) {:pending-queue-ds queue-data-seq})
-                            (ju/echo-wit-msg "222 - echo")))]
-      (ju/log-info "update-queue-browser-session: cond2, ret-session = "ret-session)
-      ret-session
-      )
-    )
-  :else  ;connection and queue entry present
-  (do 
-    (ju/log-info "update-queue-browser-session: cond3 , session = "session)
-    (let [ret-session (->>(->(get-in session [(get params :connection) (get params :queue)])
-                         ju/echo
-                         (assoc :pending-queue-ds queue-data-seq)
-                         ju/echo)
-                     (assoc (get-in session [(get params :connection)]) (get params :queue))
-                     ju/echo
-                     (assoc session (get params :connection))
-                     ju/echo)]
-      (ju/log-info "update-queue-browser-session: cond3, ret-session = "ret-session)
-      ret-session
-      )
-    )))
+  (ju/log-info "update-queue-browser-session: entered with params = " params ", session = "session ", queue-data-seq = "queue-data-seq)
+  (ju/log-info "update-queue-browser-session: 111 "(get-in session [:data]))
+  (let [session-atom (get-in session [:data])]
+    (ju/log-info "update-queue-browser-session: session-atom = "session-atom)
+    (cond 
+     (nil? (get-in @session-atom [(:connection params)])) ;connection itself absent
+       (do   
+         (ju/log-info "cond1 - session-atom = "session-atom)
+         (swap! session-atom assoc (:connection params) {(:queue params) {:pending-queue-ds queue-data-seq}})
+         session)
+       (nil? (get-in @session-atom [(get params :connection) (get params :queue)]))  ;connection present but queue absent
+       (do 
+         (ju/log-info "cond2 - session-atom = "@session-atom)
+            (swap! session-atom
+                   (fn [session-data]
+                     (assoc session-data (:connection params) 
+                            (-> (get-in session-data [(:connection params)])
+                              (ju/echo-wit-msg "1111 - echo")
+                              (assoc (:queue params) {:pending-queue-ds queue-data-seq})
+                              (ju/echo-wit-msg "222 - echo")))))
+            session)
+     :else  ;connection and queue entry present
+       (do
+         (ju/log-info "cond3 - session-atom = "@session-atom)
+          (swap! session-atom assoc-in [(:connection params) (:queue params) :pending-queue-ds] (:pending-queue-ds queue-data-seq))
+          session))))
+
+
 
 (defn save-qds-session [queue-data-seq  params session]
   (assoc session (:connection params) {(:queue params) {:orig-queue-ds queue-data-seq}})

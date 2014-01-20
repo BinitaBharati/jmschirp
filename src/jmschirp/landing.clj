@@ -1,10 +1,14 @@
 (ns jmschirp.landing
   (:require [jmschirp.util :as ju]
-            [jmschirp.adaptor :as jmsadp])
+            [jmschirp.adaptor :as jmsadp]
+             [clojure.data.json :as json])
   (:import (java.io FileNotFoundException)))
 
-(defn list-conn []
-  (ju/list-conn))
+(defn list-conn [session]
+  (let [op (ju/list-conn session)]
+    (if (empty? session)
+      {:body (json/write-str op) :session {:data (atom {})}}
+      {:body (json/write-str op) :session session})))
 
 
 (defn get-valid-vd []

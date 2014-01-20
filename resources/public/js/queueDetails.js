@@ -217,8 +217,12 @@ $(function() {
 
             $("#"+encodedQName+"-progressBarOnScroll").remove();
           } 
-                   
-          $('#footable-'+encodedQName).footable();
+          
+          //Check if footable jquery plugin is loaded. If its not loaded then  $("#footable-"+encodedQName).footable() will throw error. 
+          var test = $.fn.footable;
+          console.log('qDetailsCallBack: test = '+test);
+
+          $("#footable-"+encodedQName).footable();
             
           $("#fooTblDiv-"+encodedQName).css("display", "block");
 

@@ -3,12 +3,14 @@
      [clostache.parser :as cp]
              ;[taoensso.timbre :as timbre]
              [clojure.tools.logging :as ctl]
-             [clojure.reflect :as cr]
+             [clojure.reflect :as cr]             
              )
    (:import (java.io FileNotFoundException)
             (java.io File)
             (clojure.lang Reflector)))
 
+(defn current-thread-name []
+  (.getName (java.lang.Thread/currentThread)))
 
 (defn echo
   [x]
@@ -17,12 +19,12 @@
 
 (defn echo-wit-msg
   [x msg]
-  (println "[Echo]" msg x)
+  (println (format "[Echo %s] | " (current-thread-name)) msg " | " x)
   x)
 
 (defn echo-wit-msg-in-tl
   [msg x]
-  (println "[Echo]" msg x)
+  (println (format "[Echo %s] | " (current-thread-name)) msg " | " x)
   x)
 
 (defn log-info [ & input] (ctl/info (apply str input)))
@@ -64,8 +66,8 @@
         (spit (str (System/getProperty "user.home") "/.jmschirp/supported-vendors.clj") (pr-str default-supported-vd))
         default-supported-vd)))))
 
-(defn list-conn []
-  (read-file {:type 0 :path "/.jmschirp/vendor-info.clj"}))
+(defn list-conn [session]
+ (read-file {:type 0 :path "/.jmschirp/vendor-info.clj"}))
 
 (defn get-valid-vd []
   (read-file {:type 1 :path "/.jmschirp/supported-vendors.clj"}))
