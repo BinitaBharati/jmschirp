@@ -23,13 +23,13 @@ To start JMSChirp, execute the below command (square brackets imply optional arg
 
 On Unix like systems:
 ---------------------
-java -classpath .:<JMS vendor jar files>:[<JMS msg class jar files>:]jmschirp-0.1.0-standalone.jar jmschirp.main [<port>]
+java -classpath .:<JMS vendor jar files>:[<JMS msg class jar files>:]jmschirp-0.1.2-standalone.jar jmschirp.main [<port>]
 
 Note: Do not include tilde(~) character in the classpath, use absolute paths instead.
 
 Example:
 $ cd jmschirp-0.1.0
-$ java -Xms2g -Xmx2g -classpath .:/activemq-lib/activemq-client-5.8.0.jar:/activemq-lib/activemq-all-5.8.0.jar:/activemq-lib/activemq-broker-5.8.0.jar:/activemq-lib/activemq-amqp-5.8.0.jar:/activemq-lib/activemq-openwire-legacy-5.8.0.jar:jmschirp-0.1.0-standalone.jar jmschirp.main 
+$ java -Xms2g -Xmx2g -classpath .:/activemq-lib/activemq-client-5.8.0.jar:/activemq-lib/activemq-all-5.8.0.jar:/activemq-lib/activemq-broker-5.8.0.jar:/activemq-lib/activemq-amqp-5.8.0.jar:/activemq-lib/activemq-openwire-legacy-5.8.0.jar:jmschirp-0.1.2-standalone.jar jmschirp.main 
 
 On Windows:
 -----------
